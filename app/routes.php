@@ -12,12 +12,13 @@ $app->get('/', function () use ($app) {
     return $app['twig']->render('index.html.twig'); //appel du view
 });
 
-// $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
-$app->get('/prevention', function() use ($app) {
-	require '../src/model_prevention.php'; //appel du model
-	$all_cat = get_all_cat();
-	return $app['twig']->render('view_prevention.html.twig', array('all_cat' => $all_cat));
+$app->get('/notes', function () use ($app) {
+    require '../src/model_notes.php'; //appel du model
+    $all_notes = get_all_notes(); // appel de la fonction pour récupérer la liste des notes
+    return $app['twig']->render('view_notes.html.twig', array('all_notes' => $all_notes)); //appel du view
 });
+
+// $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
 $app->get('/prevention/{type}', function() use ($app) {
     require '../src/model_preventions'.$type.'.php'; //appel du model

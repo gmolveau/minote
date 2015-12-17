@@ -15,7 +15,8 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
 ));
 
-require_once("credentials.php");
+require_once __DIR__.'/credentials.php';
+
 $app->register(
     // you can customize services and options prefix with the provider first argument (default = 'pdo')
     new PDOServiceProvider('pdo'),
