@@ -12,6 +12,13 @@ $app->get('/', function () use ($app) {
     return $app['twig']->render('index.html.twig'); //appel du view
 });
 
+$app->get('/{url}', function() use ($app) {
+    require '../src/model_index.php'; //appel du model
+    $reponse=traiterUrl($url);
+    return $app['twig']->render('view_preventions'.$type.'.html.twig');
+});
+
+
 $app->get('/notes', function () use ($app) {
     require '../src/model_notes.php'; //appel du model
     $all_notes = get_all_notes(); // appel de la fonction pour récupérer la liste des notes
