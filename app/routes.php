@@ -7,6 +7,8 @@
 
 // Home page
 $app->get('/', function () use ($app) {
+    require 
+    $urml = generateUrl();
     // require '../src/model.php'; //appel du model
     // $articles = getArticle(); / appel de la fonction pour récupérer ce dont on a besoin
     return $app['twig']->render('index.html.twig'); //appel du view
@@ -14,16 +16,54 @@ $app->get('/', function () use ($app) {
 
 $app->get('/{url}', function() use ($app) {
     require '../src/model_index.php'; //appel du model
+
+    //if(null === $user = $app['session']->get('user'))
+      //  return $app->redirect('/login');
     $reponse=traiterUrl($url);
     return $app['twig']->render('view_preventions'.$type.'.html.twig');
 });
 
+$app->get('/{url}/view', function() use ($app) {
+    require '../src/model_index.php'; //appel du model
+    $reponse=traiterUrl($url);
+    return $app['twig']->render('view_preventions'.$type.'.html.twig');
+});
+
+$app->post('/{url}/view', function(Request $request) use($app)
+{
+    $pwd = $request->get('password'); //on recupere le mot de passe de la requete POST
+    // tester si valide
+    //TODO: authenticate
+ 
+    $app['session']->set('user', array('username'=> $usr));
+    return $app['twig']->render('postLogin.html', array('username' => $usr));
+ 
+});
+
+$app->get('/{url}/edit', function() use ($app) {
+    require '../src/model_index.php'; //appel du model
+    $reponse=traiterUrl($url);
+    return $app['twig']->render('view_preventions'.$type.'.html.twig');
+});
+
+$app->post('/{url}/edit', function(Request $request) use($app)
+{
+    $usr = $request->get('username');
+    $pas = $request->get('password');
+ 
+    //TODO: authenticate
+ 
+    $app['session']->set('user', array('username'=> $usr));
+    return $app['twig']->render('postLogin.html', array('username' => $usr));
+ 
+});
 
 $app->get('/notes', function () use ($app) {
     require '../src/model_notes.php'; //appel du model
     $all_notes = get_all_notes(); // appel de la fonction pour récupérer la liste des notes
     return $app['twig']->render('view_notes.html.twig', array('all_notes' => $all_notes)); //appel du view
 });
+
 
 // $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
@@ -61,5 +101,35 @@ $app->get('/prevention/{type}', function() use ($app) {
  return new Symfony\Component\HttpFoundation\Response(json_encode($toy), HTTP_CREATED);
  });
 
+$app->get('/', function() use($app)
+{
+    if(null === $user = $app['session']->get('user'))
+        return $app->redirect('/login');
+ 
+    return $app['twig']->render('main.html', array('name' => $user['username']));
+});
+
+$app->get('/login', function() use($app)
+{
+    return $app['twig']->render('getLogin.html');
+});
+ 
+$app->post('/login', function(Request $request) use($app)
+{
+    $usr = $request->get('username');
+    $pas = $request->get('password');
+ 
+    //TODO: authenticate
+ 
+    $app['session']->set('user', array('username'=> $usr));
+    return $app['twig']->render('postLogin.html', array('username' => $usr));
+ 
+});
+ 
+$app->get('/logout', function() use($app)
+{
+    $app['session']->set('user', null);
+    return $app['twig']->render('logout.html', array());
+ 
+});
 */
-?>
