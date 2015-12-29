@@ -3,27 +3,37 @@
 // Home page
 // exemple de route
 
-// $app->register(new Silex\Provider\SessionServiceProvider());
+$app->register(new Silex\Provider\SessionServiceProvider());
 
 // Home page
 $app->get('/', function () use ($app) {
-    require 
-    $urml = generateUrl();
-    // require '../src/model.php'; //appel du model
-    // $articles = getArticle(); / appel de la fonction pour récupérer ce dont on a besoin
-    return $app['twig']->render('index.html.twig'); //appel du view
+    require '../src/model_index_blank.php';
+    $url = generateUrl();
+    return $app->redirect('/milinks/web/index.php/'.$url);
 });
 
-$app->get('/{url}', function() use ($app) {
-    require '../src/model_index.php'; //appel du model
+$app->get('/{url}', function($url) use ($app) {
+  /* switch case
+    url valide : alphanumeric de moins de 20 caracs
+    si view protected -> redirect sur /url/view/connect
+    sinon -> redirect sur url/view
 
-    //if(null === $user = $app['session']->get('user'))
-      //  return $app->redirect('/login');
-    $reponse=traiterUrl($url);
-    return $app['twig']->render('view_preventions'.$type.'.html.twig');
+  */
+    require '../src/model_index_url.php';
+    if( checkUrl($url) ){
+      if( viewProtected($url) ){
+        return $app->redirect('/milinks/web/index.php/'.$url.'/view/connect');
+      }
+      else{
+        return $app->redirect('/milinks/web/index.php/'.$url.'/view');
+      }
+    }
+    else {
+      $app->abort(404, "Post $url is not valid.");
+    }
 });
 
-$app->get('/{url}/view', function() use ($app) {
+$app->get('/{url}/view', function($url) use ($app) {
     require '../src/model_index.php'; //appel du model
     $reponse=traiterUrl($url);
     return $app['twig']->render('view_preventions'.$type.'.html.twig');
@@ -132,4 +142,10 @@ $app->get('/logout', function() use($app)
     return $app['twig']->render('logout.html', array());
  
 });
+
+$app->get('/blog/{postId}/{commentId}', function ($postId, $commentId) {
+    // ...
+});
+
+
 */
