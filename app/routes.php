@@ -23,8 +23,8 @@ $app->get('/{url}', function($url) use ($app) {
 $app->get('/{url}/view', function($url) use ($app) {
     require '../src/model_note_view.php';
     if( (isset($session) and $session->get('id')==$url and $session->get('view')) or !isViewProtected($url) ){
-        $content=getContent($url)
-        return $app['twig']->render('view_note_view.html.twig',array('content' => $content));
+      $content=getContent($url);
+      return $app['twig']->render('view_note_view.html.twig',array('content' => $content));
     }
     else{
       return $app['twig']->render('view_note_view_protected.html.twig');
@@ -53,7 +53,7 @@ $app->post('/{url}/view', function($url, Request $request) use($app){
 $app->get('/{url}/edit', function() use ($app) {
   require '../src/model_note_edit.php'; //appel du model
   if( (isset($session) and $session->get('id')==$url and $session->get('edit')) or !isEditProtected($url) ){
-      $content=getContent($url)
+      $content=getContent($url);
       return $app['twig']->render('view_note_edit.html.twig',array('content' => $content));
   }
   else{
@@ -111,8 +111,7 @@ $app->put('/{url}/edit', function($url, Request $request) use($app) {
   else{
     return False;
   }
-  
-}
+});
 
 /* Toutes les notes */
 $app->get('/notes', function () use ($app) {
