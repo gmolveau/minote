@@ -32,7 +32,7 @@ function checkUrl($url){
 function viewProtected($url){
 	global $pdo; // get PDO connection
 	$protection = $pdo->query("SELECT `pwdView` FROM `note` WHERE `id` = '$url'");
-	if(!is_Null($protection['pwdView'])){
+	if($protection->rowCount()>0){
         return True;
     }
     else {
@@ -43,7 +43,7 @@ function viewProtected($url){
 function editProtected($url){
 	global $pdo;
 	$editProt = $pdo->query("SELECT pwdEdit FROM note WHERE id = $url");
-	if(!is_Null($editProt['pwdEdit'])){
+	if($editProt->rowCount()>0){
 		return True; 
 	}
 	else{
