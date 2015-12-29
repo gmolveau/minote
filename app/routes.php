@@ -7,13 +7,13 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 
 // Home page
 $app->get('/', function () use ($app) {
-    require '../src/model_index_blank.php';
+    require '../src/model_index.php';
     $url = generateUrl();
     return $app->redirect('/'.$url);
 });
 
 $app->get('/{url}', function($url) use ($app) {
-    require '../src/model_index_url.php';
+    require '../src/model_index.php';
     if( checkUrl($url) ){
       if( viewProtected($url) ){
         return $app->redirect('/'.$url.'/view/connect');
