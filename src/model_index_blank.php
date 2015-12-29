@@ -9,10 +9,10 @@ function generateUrl(){
 	    $url .= $pool[rand(0, strlen($pool) - 1)];
 	}
 	$validation = $pdo->query("SELECT `id` FROM `note` WHERE `id` = '$url'");
-	if($validation->rowCount() > 0) {
+	if($validation->rowCount() > 0) { // la requete a renvoyé quelque chose
 		generateUrl();
     }
-    else {
+    else { // la requete n'a rien renvoyé
         return $url;	
     }
 }

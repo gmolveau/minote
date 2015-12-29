@@ -9,23 +9,17 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 $app->get('/', function () use ($app) {
     require '../src/model_index_blank.php';
     $url = generateUrl();
-    return $app->redirect('/milinks/web/index.php/'.$url);
+    return $app->redirect('/'.$url);
 });
 
 $app->get('/{url}', function($url) use ($app) {
-  /* switch case
-    url valide : alphanumeric de moins de 20 caracs
-    si view protected -> redirect sur /url/view/connect
-    sinon -> redirect sur url/view
-
-  */
     require '../src/model_index_url.php';
     if( checkUrl($url) ){
       if( viewProtected($url) ){
-        return $app->redirect('/milinks/web/index.php/'.$url.'/view/connect');
+        return $app->redirect('/'.$url.'/view/connect');
       }
       else{
-        return $app->redirect('/milinks/web/index.php/'.$url.'/view');
+        return $app->redirect('/'.$url.'/view');
       }
     }
     else {
