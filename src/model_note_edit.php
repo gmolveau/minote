@@ -10,20 +10,43 @@ function isEditProtected($url){
 
 function protectEdit($url,$password){
 	global $pdo;
-	$upd = $pdo->prepare("INSERT INTO note (SET `content`=:contenu WHERE `id`=:url");
-	$upd->execute(array(
-				'content' => $content,
+	$hash = password_hash($password, PASSWORD_DEFAULT);
+	if !isSaved($url){
+		$upd = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
+		$upd->execute(array(
+				'url'=>$url,
+				'content' => null,
+				'pwdView' => null,				
+				'pwdEdit'=> $hash
+				));
+	}
+	else{
+		$upd = $pdo->prepare("UPDATE `note` SET `pwdEdit`=:pwdEdit WHERE `id`=:url");
+		$upd->execute(array(
+				'pwdEdit' => $hash,
 				'url'=>$url,
 				));
-}
+	}
 
 function protectView($url,$password){
 	global $pdo;
-	$upd = $pdo->prepare("INSERT INTO note (SET `content`=:contenu WHERE `id`=:url");
-	$upd->execute(array(
-				'content' => $content,
+	$hash = password_hash($password, PASSWORD_DEFAULT);
+	if !isSaved($url){
+		$upd = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
+		$upd->execute(array(
+				'url'=>$url,
+				'content' => null,
+				'pwdView' => $hash,
+				'pwdEdit'=> null,
+				));
+	}
+	else{
+		$upd = $pdo->prepare("UPDATE `note` SET `pwdView`=:pwdView WHERE `id`=:url");
+		$upd->execute(array(
+				'pwdView' => $hash,
 				'url'=>$url,
 				));
+	}
 }
 
 function verifyPassword($url,$pwd){
@@ -40,10 +63,15 @@ function getContent($url){
 
 function updateNote($url,$content){
 	global $pdo;
-	$upd = $pdo->prepare("UPDATE `note` SET `content`=:contenu WHERE `id`=:url");
+	$upd = $pdo->prepare("UPDATE `note` SET `content`=:content WHERE `id`=:url");
 	$upd->execute(array(
 				'content' => $content,
 				'url'=>$url,
 				));
 }
 
+function isSaved($url){
+	global $pdo;
+	$validation = $pdo->query("SELECT `id` FROM `note` WHERE `id` = '$url'");
+	return ($validation->rowCount() > 0);
+}

@@ -15,5 +15,5 @@ function isViewProtected($url){
 function verifyPassword($url,$pwd){
 	global $pdo;
 	$recup = $pdo->query("SELECT `pwdView` FROM `note` WHERE `id` = '$url'");
-	return password_verify($pwd,$recup['pwdView'])
+	return password_verify($pwd,$recup['pwdView']);
 }

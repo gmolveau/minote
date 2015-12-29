@@ -19,13 +19,13 @@ function generateUrl(){
 
 //model for milinks.info/{url}
 function checkUrl($url){
-	global $pdo; // get PDO connection
-	$validation = $pdo->query("SELECT `id` FROM `note` WHERE `id` = '$url'");
-	if($validation->rowCount() > 0) {
+	if ( strlen($url) < 10 and ctype_alnum($url) ) { //si url < 10 caracteres et si elle est alphanumeric
+		global $pdo; // get PDO connection
+		$validation = $pdo->query("SELECT `id` FROM `note` WHERE `id` = '$url'");
+		return ($validation->rowCount() > 0);
+	}
+	else {
 		return False;
-    }
-    else {
-    	return True;
-    }
+	}
 }
 
