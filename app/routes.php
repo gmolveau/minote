@@ -12,6 +12,13 @@ $app->get('/', function () use ($app) {
     return $app->redirect('/'.$url);
 });
 
+/*
+/{url} :
+checkUrl() : dispo et conforme
+si OK : renvoie /{url}/view
+sinon : abort ERROR
+*/
+
 $app->get('/{url}', function($url) use ($app) {
     require '../src/model_index.php';
     if( checkUrl($url) ){
@@ -26,6 +33,13 @@ $app->get('/{url}', function($url) use ($app) {
       $app->abort(404, "Post $url is not valid.");
     }
 });
+
+/*
+/{url}/view :
+viewProtected()
+si OUI : render page (form_view_password) avec le formulaire d’entrée du mot de passe “form POST”
+sinon : render page de la note bien présentée tahu
+*/
 
 $app->get('/{url}/view', function($url) use ($app) {
     require '../src/model_index.php'; //appel du model
@@ -43,6 +57,21 @@ $app->post('/{url}/view', function(Request $request) use($app)
     return $app['twig']->render('postLogin.html', array('username' => $usr));
  
 });
+
+/*
+/{url}/edit :
+GET =
+editProtected()
+si OUI : render page (form_edit_password) avec le formulaire d’entrée du mot de passe “form POST” 
+si NON : ok
+
+POST =
+recuperer les valeurs du $_POST
+verifier si password OK
+si OUI : SESSION avec id = url
+sinon error (à revoir pour eviter que ça soit relou)
+
+*/
 
 $app->get('/{url}/edit', function() use ($app) {
     require '../src/model_index.php'; //appel du model
@@ -62,6 +91,7 @@ $app->post('/{url}/edit', function(Request $request) use($app)
  
 });
 
+/* Toutes les notes */
 $app->get('/notes', function () use ($app) {
     require '../src/model_notes.php'; //appel du model
     $all_notes = get_all_notes(); // appel de la fonction pour récupérer la liste des notes
