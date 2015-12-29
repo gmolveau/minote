@@ -1,29 +1,19 @@
 <?php
 
-function importNoteTwo($url){
+function getContent($url){
 	global $pdo;
-	$recup = $pdo->query("SELECT content FROM note WHERE id = $url");
+	$recup = $pdo->query("SELECT `content` FROM `note` WHERE `id` = '$url'");
 	return $recup['content'];
 }
 
-function viewProtectedTwo($url){
+function isViewProtected($url){
 	global $pdo;
-	$viewProt = $pdo->query("SELECT pwdView FROM note WHERE id = $url");
-	if($viewProt->rowCount()>0){
-		return True; 
-	}
-	else{
-		return False;
-	}
+	$editProt = $pdo->query("SELECT pwdEdit FROM note WHERE id = $url");
+	return ($editProt->rowCount()>0);
 }
 
-function verifPwdView($url,$pwd){
+function verifyPassword($url,$pwd){
 	global $pdo;
-	$recup = $pdo->query("SELECT pwdView FROM note WHERE id=$url");
-	if($pwd==$recup['pwdEdit']){
-		return True;
-	}
-	else{
-		return False;
-	}
+	$recup = $pdo->query("SELECT `pwdView` FROM `note` WHERE `id` = '$url'");
+	return password_verify($pwd,$recup['pwdView'])
 }
