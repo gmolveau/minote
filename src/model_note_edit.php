@@ -27,6 +27,7 @@ function protectEdit($url,$password){
 				'url'=>$url,
 				));
 	}
+}
 
 function protectView($url,$password){
 	global $pdo;
@@ -74,4 +75,21 @@ function isSaved($url){
 	global $pdo;
 	$validation = $pdo->query("SELECT `id` FROM `note` WHERE `id` = '$url'");
 	return ($validation->rowCount() > 0);
+}
+
+function changeUrl($url,$new_url){
+	require './model_index.php';
+	if (checkUrl($new_url) ){
+		global $pdo;
+		$upd = $pdo->prepare("UPDATE `note` SET `id`=:new_url WHERE `id`=:url");
+		$upd->execute(array(
+				'new_url' => $new_url,
+				'url'=>$url,
+				));
+		return True;
+	}
+	else{
+		return False;
+	}
+
 }
