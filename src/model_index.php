@@ -29,24 +29,3 @@ function checkUrl($url){
     }
 }
 
-function viewProtected($url){
-	global $pdo; // get PDO connection
-	$protection = $pdo->query("SELECT `pwdView` FROM `note` WHERE `id` = '$url'");
-	if($protection->rowCount()>0){
-        return True;
-    }
-    else {
-    	return False;
-    }
-}
-
-function editProtected($url){
-	global $pdo;
-	$editProt = $pdo->query("SELECT pwdEdit FROM note WHERE id = $url");
-	if($editProt->rowCount()>0){
-		return True; 
-	}
-	else{
-		return False;
-	}
-}
