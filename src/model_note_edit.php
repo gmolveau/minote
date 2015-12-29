@@ -64,11 +64,22 @@ function getContent($url){
 
 function updateNote($url,$content){
 	global $pdo;
+	if !isSaved($url){
+		$upd = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
+		$upd->execute(array(
+				'url'=>$url,
+				'content' => $content,
+				'pwdView' => null,
+				'pwdEdit'=> null,
+				));
+	}
+	else{
 	$upd = $pdo->prepare("UPDATE `note` SET `content`=:content WHERE `id`=:url");
 	$upd->execute(array(
-				'content' => $content,
 				'url'=>$url,
+				'content' => $content,
 				));
+	}
 }
 
 function isSaved($url){

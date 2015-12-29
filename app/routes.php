@@ -71,15 +71,19 @@ $app->post('/{url}/edit', function($url, Request $request) use($app) {
         if(isset($session) and $session->get('id')==$url){
           $session->set('edit', True);
         }
-      else{
-        $session = new Session();
-        $session->start();
-        // set and get session attributes
-        $session->set('id', $url);
-        $session->set('view', False);
-        $session->set('edit', True);
+        else{
+          $session = new Session();
+          $session->start();
+          // set and get session attributes
+          $session->set('id', $url);
+          $session->set('view', False);
+          $session->set('edit', True);
+        }
+        return $app->redirect('/'.$url.'/edit');
       }
-      break;
+      else{
+        $app->abort(401, "password incorrect");
+      }
     case "protectView" :
       $password = $request->get('password');
       protectView($url,$password);
@@ -91,28 +95,24 @@ $app->post('/{url}/edit', function($url, Request $request) use($app) {
     case "changeUrl" :
       $new_url = $request->get('new_url');
       changeUrl($url,$new_url);
-      break;
+      return $app->redirect('/'.$new_url.'/view');
     default :
-      $app->abort(404, "wallah le problème");
+      $app->abort(403, "wallah le problème");
   }
-  $password = $request->get('password');
-  if ($type == "view") {
-    protectView($url,$password);      
-  }
-  else{
-    protectEdit($url,$password)
-  }
-  //TODO: authenticate
-
-  $app['session']->set('user', array('username'=> $usr));
-  return $app['twig']->render('postLogin.html', array('username' => $usr));
 });
 
 
 $app->put('/{url}/edit', function($url, Request $request) use($app) {
-  $content = $request->get('content');
+  if( (isset($session) and $session->get('id')==$url and $session->get('edit')) or !isEditProtected($url) ){
+    $content = $request->get('content');
+    updateNote($url,$content);
+    return True;
+  }
+  else{
+    return False;
+  }
+  
 }
-
 
 /* Toutes les notes */
 $app->get('/notes', function () use ($app) {
@@ -122,84 +122,11 @@ $app->get('/notes', function () use ($app) {
 });
 
 
-// $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
-
-$app->get('/prevention/{type}', function() use ($app) {
-    require '../src/model_preventions'.$type.'.php'; //appel du model
-    $crise = getTypeCrise($type);
-    return $app['twig']->render('view_preventions'.$type.'.html.twig');
-});
-
 /*
-
 
 DANS LA VARIABLE $_SESSION il y aura :
 'id' [str] qui sera l'id de la note
 'view' [bool]
 'edit' [bool]
-
- $app->post('/', function (Silex\Application $app, Symfony\Component\HttpFoundation\Request $request) {
-  
-      $name = $request->get('name');
-      $quantity = $request->get('quantity');
-      $description = $request->get('description');
-      $image = $request->get('image');
-      
-      // Code to add the toy into the toy db
-    // and return a toy id
-     //$toy_id = create_toy($name, $quantity, $description, $image);
-     //$toy = get_toy($toy_id);
-     
-     // For now lets just assume we have saved it
-     $toy = array(
-         '00003' => array(
-             'name' => $name,
-             'quantity' => $quantity,
-             'description' => $description,
-             'image' => $image,
-         )
-     );
-     
-     // Useful to return the newly added details
-// HTTP_CREATED = 200
- return new Symfony\Component\HttpFoundation\Response(json_encode($toy), HTTP_CREATED);
- });
-
-$app->get('/', function() use($app)
-{
-    if(null === $user = $app['session']->get('user'))
-        return $app->redirect('/login');
- 
-    return $app['twig']->render('main.html', array('name' => $user['username']));
-});
-
-$app->get('/login', function() use($app)
-{
-    return $app['twig']->render('getLogin.html');
-});
- 
-$app->post('/login', function(Request $request) use($app)
-{
-    $usr = $request->get('username');
-    $pas = $request->get('password');
- 
-    //TODO: authenticate
- 
-    $app['session']->set('user', array('username'=> $usr));
-    return $app['twig']->render('postLogin.html', array('username' => $usr));
- 
-});
- 
-$app->get('/logout', function() use($app)
-{
-    $app['session']->set('user', null);
-    return $app['twig']->render('logout.html', array());
- 
-});
-
-$app->get('/blog/{postId}/{commentId}', function ($postId, $commentId) {
-    // ...
-});
-
 
 */
