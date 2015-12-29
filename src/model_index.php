@@ -16,6 +16,7 @@ function generateUrl(){
         return $url;	
     }
 }
+
 //model for milinks.info/{url}
 function checkUrl($url){
 	global $pdo; // get PDO connection
@@ -31,7 +32,7 @@ function checkUrl($url){
 function viewProtected($url){
 	global $pdo; // get PDO connection
 	$protection = $pdo->query("SELECT `pwdView` FROM `note` WHERE `id` = '$url'");
-	if(!is_Null($editProt['pwdEdit'])){
+	if(!is_Null($protection['pwdView'])){
         return True;
     }
     else {
@@ -46,6 +47,6 @@ function editProtected($url){
 		return True; 
 	}
 	else{
-		return False
+		return False;
 	}
 }
