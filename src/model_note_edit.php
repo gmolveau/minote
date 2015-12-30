@@ -12,7 +12,7 @@ function isEditProtected($url){
 		$stmt->bindParam(':url', $url);
 		$stmt->execute();
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
-		return (empty($result));
+		return (!empty($result));
 	}
 	catch( PDOException $e ) {
     	throw( $e->getMessage( ));

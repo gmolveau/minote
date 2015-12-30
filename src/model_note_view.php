@@ -33,7 +33,7 @@ function isViewProtected($url){
 		$stmt->bindParam(':url', $url);
 		$stmt->execute();
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
-		return (empty($pwdView));
+		return (!empty($result));
 	}
 	catch( PDOException $e ) {
     	throw( $e->getMessage( ));
@@ -74,7 +74,7 @@ function isSaved($url){
 		$stmt->bindParam(':url', $url);
 		$stmt->execute();
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
-		return (empty($result));
+		return (!empty($result));
 	}
 	catch( PDOException $e ) {
     	throw( $e->getMessage( ));
@@ -111,6 +111,7 @@ function protectView($url,$password){
 			$stmt->bindParam(':url', $url);
 			$stmt->bindParam(':pwdView', $hash);
 			$stmt->execute();
+			return True;
 		}
 		catch( PDOException $e ) {
     		throw( $e->getMessage( ));

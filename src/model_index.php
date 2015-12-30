@@ -22,7 +22,7 @@ function generateUrl(){
 	catch( PDOException $e ) {
     	throw( $e->getMessage( ));
 	}
-	if(empty($result)) {
+	if(empty($result)) { // la requete n'a rien renvoyé donc url pas prise
 		return $url;
     }
     else {
@@ -44,7 +44,7 @@ function checkUrl($url){
 			$stmt->bindParam(':url', $url);
 			$stmt->execute();
 			$result=$stmt->fetch(PDO::FETCH_ASSOC);
-			return (empty($result)); //conforme et pas prise	
+			return (empty($result)); // la requete n'a rien renvoyé donc url est conforme et pas prise	
 		}
 		catch( PDOException $e ) {
     		throw( $e->getMessage( ));

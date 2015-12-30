@@ -23,6 +23,27 @@ $app->get('/{url}', function($url) use ($app) {
 // la view pour chaque note
 $app->get('/{url}/view', function($url) use ($app) {
     require '../src/model_note_view.php';
+    if(!isViewProtected($url)){
+      $content=getContent($url);
+      return $app['twig']->render('view_note_view.html.twig',array('content' => $content));
+    }
+    else{
+      if(isset($session)){
+        if($session->get('id')==$url){
+          if($session->get('view') ){
+            $content=getContent($url);
+            return $app['twig']->render('view_note_view.html.twig',array('content' => $content));
+          }
+          else{
+            return $app['twig']->render('view_note_protected.html.twig',array('type'=>'view'));
+          }
+        }
+        else{
+          return $app['twig']->render('view_note_protected.html.twig',array('type'=>'view'));
+        }
+      }
+    }
+/*
     if( (isset($session) and $session->get('id')==$url and $session->get('view')) or !isViewProtected($url) ){
     // si une session existe ET si le parametre 'id' de cette session est egal à l'url 
     // ET si le parametre 'view' qui est un booléen est True; OU ALORS si la view n'est PAS protected
@@ -33,6 +54,7 @@ $app->get('/{url}/view', function($url) use ($app) {
     //sinon : donc si pas de session ou pas pas le bon id ou pas le droit de view ou si elle est protected
       return $app['twig']->render('view_note_protected.html.twig',array('type'=>'view'));
     }
+*/
 });
 
 // la méthode POST sur la view de chaque note
