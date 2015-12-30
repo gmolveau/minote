@@ -1,2 +1,4 @@
 vendor/
 app/credentials.php
+composer.lock
+composer.phar
