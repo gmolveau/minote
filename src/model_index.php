@@ -13,10 +13,15 @@ function generateUrl(){
 	for ($i = 0; $i < 7; $i++) {
 	    $url .= $pool[rand(0, strlen($pool) - 1)];
 	}
-	$stmt = $pdo->prepare("SELECT * from note where id = :url");
-	$stmt->bindParam(':url', $url);
-	$stmt->execute();
-	$result=$stmt->fetch(PDO::FETCH_ASSOC);
+	try {
+		$stmt = $pdo->prepare("SELECT * from note where id = :url");
+		$stmt->bindParam(':url', $url);
+		$stmt->execute();
+		$result=$stmt->fetch(PDO::FETCH_ASSOC);
+	} 	
+	catch( PDOException $e ) {
+    	throw( $e->getMessage( ) , $e->getCode( ) );
+	}
 	if(empty($result)) {
 		return $url;
     }
@@ -34,11 +39,16 @@ function generateUrl(){
 function checkUrl($url){
 	if ( strlen($url) < 10 and ctype_alnum($url) ) { //si url < 10 caracteres et si elle est alphanumeric
 		global $pdo; // get PDO connection
-		$stmt = $pdo->prepare("SELECT * from note where id = :url");
-		$stmt->bindParam(':url', $url);
-		$stmt->execute();
-		$result=$stmt->fetch(PDO::FETCH_ASSOC);
-		return (empty($result)); //conforme et pas prise
+		try {
+			$stmt = $pdo->prepare("SELECT * from note where id = :url");
+			$stmt->bindParam(':url', $url);
+			$stmt->execute();
+			$result=$stmt->fetch(PDO::FETCH_ASSOC);
+			return (empty($result)); //conforme et pas prise	
+		}
+		catch( PDOException $e ) {
+    		throw( $e->getMessage( ) , $e->getCode( ) );
+		}
 	}
 	else {
 		return False;

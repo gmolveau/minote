@@ -31,13 +31,14 @@ $app->get('/{url}/view', function($url) use ($app) {
     }
     else{
     //sinon : donc si pas de session ou pas pas le bon id ou pas le droit de view ou si elle est protected
-      return $app['twig']->render('view_note_protected.html.twig',array('type' => "view"));
+      return $app['twig']->render('view_note_protected.html.twig',array('type'=>'view'));
     }
 });
 
 // la méthode POST sur la view de chaque note
 // la seule methode POST qui aura lieu sur la view d'une note est le LOGIN
 $app->post('/{url}/view', function($url, Request $request) use($app){
+  require '../src/model_note_view.php';
   $password = $request->get('password'); //on recupere le mot de passe de la requete POST
   if( verifyPassword($url,$pwd) ){
   // on verifie si le password entré est égal à celui de la DB
@@ -68,7 +69,7 @@ $app->get('/{url}/edit', function() use ($app) {
       return $app['twig']->render('view_note_edit.html.twig',array('content' => $content));
   }
   else{
-    return $app['twig']->render('view_note_protected.html.twig',array('type' => "edit"));
+    return $app['twig']->render('view_note_protected.html.twig',array('type'=>'edit'));
   }
 });
 
@@ -80,7 +81,7 @@ $app->post('/{url}/edit', function($url, Request $request) use($app) {
   // on fera varier sa valeur selon le cas
   // login | protectView | protectEdit | changeUrl
   switch($type) {
-    case "login" :
+    case "edit" :
       $password = $request->get('password');
       if (verifyPassword($url,$pwd)) {
         if(isset($session) and $session->get('id')==$url){
