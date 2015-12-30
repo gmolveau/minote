@@ -31,7 +31,7 @@ $app->get('/{url}/view', function($url) use ($app) {
     }
     else{
     //sinon : donc si pas de session ou pas pas le bon id ou pas le droit de view ou si elle est protected
-      return $app['twig']->render('view_note_view_protected.html.twig');
+      return $app['twig']->render('view_note_protected.html.twig',array('type' => "view"));
     }
 });
 
@@ -68,7 +68,7 @@ $app->get('/{url}/edit', function() use ($app) {
       return $app['twig']->render('view_note_edit.html.twig',array('content' => $content));
   }
   else{
-    return $app['twig']->render('view_note_edit_protected.html.twig');
+    return $app['twig']->render('view_note_protected.html.twig',array('type' => "edit"));
   }
 });
 
