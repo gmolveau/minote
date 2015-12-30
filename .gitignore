@@ -2,3 +2,4 @@ vendor/
 app/credentials.php
 composer.lock
 composer.phar
+app/routes_dev.php
