@@ -1,8 +1,10 @@
 {% extends "template.html" %}
 {% block content %}
+
 $.ajax({ url: '/', type: ‘PUT’, success: function(result) { // Do something with the result } }); //le put
 $.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //login
 $.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //protect view
 $.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //protect edit
 $.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //change url
+
 {% endblock %}

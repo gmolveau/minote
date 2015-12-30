@@ -11,7 +11,7 @@ function get_all_notes(){
 	    return $all_notes; //renvoyer à la view
     }
     catch( PDOException $e ) {
-    	throw( $e->getMessage( ) , $e->getCode( ) );
+    	throw( $e->getMessage( ));
 	}
 };
 ?>

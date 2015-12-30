@@ -15,7 +15,7 @@ function isEditProtected($url){
 		return (empty($result));
 	}
 	catch( PDOException $e ) {
-    	throw( $e->getMessage( ) , $e->getCode( ) );
+    	throw( $e->getMessage( ));
 	}
 }
 /**
@@ -39,7 +39,7 @@ function protectEdit($url,$password){
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ) , $e->getCode( ) );
+    		throw( $e->getMessage( ));
 		}
 	}
 	else{
@@ -51,7 +51,7 @@ function protectEdit($url,$password){
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ) , $e->getCode( ) );
+    		throw( $e->getMessage( ));
 		}
 	}
 }
@@ -77,7 +77,7 @@ function protectView($url,$password){
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ) , $e->getCode( ) );
+    		throw( $e->getMessage( ));
 		}
 	}
 	else{
@@ -89,7 +89,7 @@ function protectView($url,$password){
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ) , $e->getCode( ) );
+    		throw( $e->getMessage( ));
 		}
 	}
 }
@@ -111,7 +111,7 @@ function verifyPassword($url,$pwd){
 		return password_verify($pwd,$result['pwdEdit']);
 	}
 	catch( PDOException $e ) {
-    	throw( $e->getMessage( ) , $e->getCode( ) );
+    	throw( $e->getMessage( ));
 	}
 }
 
@@ -130,7 +130,7 @@ function getContent($url){
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
 		return $result['content'];
 	}catch( PDOException $e ) {
-    	throw( $e->getMessage( ) , $e->getCode( ) );
+    	throw( $e->getMessage( ));
 	}
 }
 
@@ -154,7 +154,7 @@ function updateNote($url,$content){
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ) , $e->getCode( ) );
+    		throw( $e->getMessage( ));
 		}
 	}
 	else{
@@ -166,7 +166,7 @@ function updateNote($url,$content){
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ) , $e->getCode( ) );
+    		throw( $e->getMessage( ));
 		}
 	}
 }
@@ -187,7 +187,7 @@ function isSaved($url){
 		return (!empty($result));
 	}
 	catch( PDOException $e ) {
-    	throw( $e->getMessage( ) , $e->getCode( ) );
+    	throw( $e->getMessage( ));
 	}
 }
 
@@ -210,7 +210,7 @@ function changeUrl($url,$new_url){
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ) , $e->getCode( ) );
+    		throw( $e->getMessage( ));
 		}
 	}
 	else{

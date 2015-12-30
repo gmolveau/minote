@@ -20,7 +20,7 @@ function generateUrl(){
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
 	} 	
 	catch( PDOException $e ) {
-    	throw( $e->getMessage( ) , $e->getCode( ) );
+    	throw( $e->getMessage( ));
 	}
 	if(empty($result)) {
 		return $url;
@@ -47,7 +47,7 @@ function checkUrl($url){
 			return (empty($result)); //conforme et pas prise	
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ) , $e->getCode( ) );
+    		throw( $e->getMessage( ));
 		}
 	}
 	else {

@@ -16,7 +16,7 @@ function getContent($url){
 		return $result['content'];
 	}
 	catch( PDOException $e ) {
-    	throw( $e->getMessage( ) , $e->getCode( ) );
+    	throw( $e->getMessage( ));
 	}
 }
 
@@ -36,7 +36,7 @@ function isViewProtected($url){
 		return (empty($pwdView));
 	}
 	catch( PDOException $e ) {
-    	throw( $e->getMessage( ) , $e->getCode( ) );
+    	throw( $e->getMessage( ));
 	}
 }
 
@@ -57,7 +57,7 @@ function verifyPassword($url,$pwd){
 		return password_verify($pwd,$result['pwdView']);
 	}
 	catch( PDOException $e ) {
-    	throw( $e->getMessage( ) , $e->getCode( ) );
+    	throw( $e->getMessage( ));
 	}
 }
 
@@ -77,7 +77,7 @@ function isSaved($url){
 		return (empty($result));
 	}
 	catch( PDOException $e ) {
-    	throw( $e->getMessage( ) , $e->getCode( ) );
+    	throw( $e->getMessage( ));
 	}
 }
 
@@ -102,7 +102,7 @@ function protectView($url,$password){
 			return True;
 		}	
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ) , $e->getCode( ) );
+    		throw( $e->getMessage( ));
 		}
 	}
 	else{
@@ -113,7 +113,7 @@ function protectView($url,$password){
 			$stmt->execute();
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ) , $e->getCode( ) );
+    		throw( $e->getMessage( ));
 		}
 	}
 }
