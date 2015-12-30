@@ -25,14 +25,14 @@ $app->get('/{url}/view', function($url) use ($app) {
     require '../src/model_note_view.php';
     if(!isViewProtected($url)){
       $content=getContent($url);
-      return $app['twig']->render('view_note_view.html.twig',array('content' => $content));
+      return $app['twig']->render('view_note_view.html.twig',array('content' => $content, 'url' => $url));
     }
     else{
       if(isset($session)){
         if($session->get('id')==$url){
           if($session->get('view') ){
             $content=getContent($url);
-            return $app['twig']->render('view_note_view.html.twig',array('content' => $content));
+            return $app['twig']->render('view_note_view.html.twig',array('content' => $content, 'url' => $url));
           }
           else{
             return $app['twig']->render('view_note_protected.html.twig',array('type'=>'view'));
@@ -59,9 +59,9 @@ $app->get('/{url}/view', function($url) use ($app) {
 
 // la méthode POST sur la view de chaque note
 // la seule methode POST qui aura lieu sur la view d'une note est le LOGIN
-$app->post('/{url}/view', function($url, Request $request) use($app){
+$app->post('/{url}/view', function($url) use($app){
   require '../src/model_note_view.php';
-  $password = $request->get('password'); //on recupere le mot de passe de la requete POST
+  $password = $app['request']->get('password'); //on recupere le mot de passe de la requete POST
   if( verifyPassword($url,$pwd) ){
   // on verifie si le password entré est égal à celui de la DB
     if(isset($session) and $session->get('id')==$url){
@@ -84,27 +84,33 @@ $app->post('/{url}/view', function($url, Request $request) use($app){
 // l'edit pour chaque note
 $app->get('/{url}/edit', function($url) use ($app) {
   require '../src/model_note_edit.php'; //appel du model
-  if( (isset($session) and $session->get('id')==$url and $session->get('edit')) or !isEditProtected($url) ){
-  // si une session existe ET si le parametre 'id' de cette session est egal à l'url 
-  // ET si le parametre 'edit' qui est un booléen est True; OU ALORS si l'edit' n'est PAS protected
+    if(!isEditProtected($url)){
+      echo "pas edit protected";
       $content=getContent($url);
-      return $app['twig']->render('view_note_edit.html.twig',array('content' => $content));
-  }
-  else{
-    return $app['twig']->render('view_note_protected.html.twig',array('type'=>'edit'));
-  }
+      return $app['twig']->render('view_note_edit.html.twig',array('content' => $content, 'url' => $url));
+    }
+    else{
+      if(isset($session)){
+        if($session->get('id')==$url){
+          if($session->get('edit') ){
+            $content=getContent($url);
+            return $app['twig']->render('view_note_edit.html.twig',array('content' => $content, 'url' => $url));
+          }
+        }
+      }
+      return $app['twig']->render('view_note_protected.html.twig',array('type'=>'edit'));
 });
 
 // la méthode POST sur la view de chaque note
 // il y'aura plusieurs POST possibles vers cette page cest pour cela qu'on fait un switch
-$app->post('/{url}/edit', function($url, Request $request) use($app) { 
+$app->post('/{url}/edit', function($url) use($app) { 
   require '../src/model_note_edit.php';
-  $type = $request->get('type'); // 'type' sera un champ caché dans tous les formulaires
+  $type = $app['request']->get('type'); // 'type' sera un champ caché dans tous les formulaires
   // on fera varier sa valeur selon le cas
   // login | protectView | protectEdit | changeUrl
   switch($type) {
     case "edit" :
-      $password = $request->get('password');
+      $password = $app['request']->get('password');
       if (verifyPassword($url,$pwd)) {
         if(isset($session) and $session->get('id')==$url){
           $session->set('edit', True);
@@ -123,15 +129,15 @@ $app->post('/{url}/edit', function($url, Request $request) use($app) {
         $app->abort(401, "password incorrect");
       }
     case "protectView" :
-      $password = $request->get('password');
+      $password = $app['request']->get('password');
       protectView($url,$password);
       break;
     case "protectEdit" :
-      $password = $request->get('password');
+      $password = $app['request']->get('password');
       protectEdit($url,$password);
       break;
     case "changeUrl" :
-      $new_url = $request->get('new_url');
+      $new_url = $app['request']->get('new_url');
       changeUrl($url,$new_url);
       return $app->redirect('/'.$new_url.'/view');
     default :
@@ -140,10 +146,10 @@ $app->post('/{url}/edit', function($url, Request $request) use($app) {
 });
 
 // methode PUT pour l'edit de chaque note
-$app->put('/{url}/edit', function($url, Request $request) use($app) {
+$app->put('/{url}/edit', function($url) use($app) {
   if( (isset($session) and $session->get('id')==$url and $session->get('edit')) or !isEditProtected($url) ){
   // on verifie si l'utilisateur qui envoie cette requete a le droit de faire cet update
-    $content = $request->get('content');
+    $content = $app['request']->get('content');
     updateNote($url,$content);
     return True;
   }

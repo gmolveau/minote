@@ -12,7 +12,7 @@ function isEditProtected($url){
 		$stmt->bindParam(':url', $url);
 		$stmt->execute();
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
-		return (!empty($result));
+		return (!empty($result['pwdEdit']));
 	}
 	catch( PDOException $e ) {
     	throw( $e->getMessage( ));
@@ -184,7 +184,7 @@ function isSaved($url){
 		$stmt->bindParam(':url', $url);
 		$stmt->execute();
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
-		return (!empty($result));
+		return (!empty($result) or !empty($result['id']));
 	}
 	catch( PDOException $e ) {
     	throw( $e->getMessage( ));

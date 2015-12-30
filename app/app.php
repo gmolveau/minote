@@ -3,7 +3,7 @@ use Silex\Application;
 use Csanquer\Silex\PdoServiceProvider\Provider\PDOServiceProvider;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Debug\ExceptionHandler;
-use Symfony\Component\HttpFoundation\Request as Request;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 // Register global error and exception handlers

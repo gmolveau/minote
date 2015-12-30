@@ -14,7 +14,7 @@ function generateUrl(){
 	    $url .= $pool[rand(0, strlen($pool) - 1)];
 	}
 	try {
-		$stmt = $pdo->prepare("SELECT * from note where id = :url");
+		$stmt = $pdo->prepare("SELECT id from note where id = :url");
 		$stmt->bindParam(':url', $url);
 		$stmt->execute();
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
@@ -37,21 +37,6 @@ function generateUrl(){
  * @return boolean true if valid and not taken, false otherwise
  */
 function checkUrl($url){
-	if ( strlen($url) < 10 and ctype_alnum($url) ) { //si url < 10 caracteres et si elle est alphanumeric
-		global $pdo; // get PDO connection
-		try {
-			$stmt = $pdo->prepare("SELECT * from note where id = :url");
-			$stmt->bindParam(':url', $url);
-			$stmt->execute();
-			$result=$stmt->fetch(PDO::FETCH_ASSOC);
-			return (empty($result)); // la requete n'a rien renvoyé donc url est conforme et pas prise	
-		}
-		catch( PDOException $e ) {
-    		throw( $e->getMessage( ));
-		}
-	}
-	else {
-		return False;
-	}
+	return ( strlen($url) < 10 and ctype_alnum($url) ); //si url < 10 caracteres et si elle est alphanumeric
 }
 
