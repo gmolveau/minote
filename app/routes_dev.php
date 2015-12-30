@@ -6,14 +6,14 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 $app->get('/', function () use ($app) { 
     require '../src/model_index.php';
     $url = generateUrl();
-    return $app->redirect('/'.$url);
+    return $app->redirect('/milinks/web/index.php/'.$url);
 });
 
 //arrivée avec url deja connue
 $app->get('/{url}', function($url) use ($app) {
     require '../src/model_index.php';
     if( checkUrl($url) ){
-      return $app->redirect('/'.$url.'/view');
+      return $app->redirect('/milinks/web/index.php/'.$url.'/view');
     }
     else {
       $app->abort(404, "l'url \" $url \" is not a valid one. Must be alphanumeric and less than 10 characters.");
@@ -47,7 +47,7 @@ $app->post('/{url}/view', function($url, Request $request) use($app){
       $session->set('edit', False);
     }
   }
-  return $app->redirect('/'.$url.'/view');
+  return $app->redirect('/milinks/web/index.php/'.$url.'/view');
 });
 
 
@@ -80,7 +80,7 @@ $app->post('/{url}/edit', function($url, Request $request) use($app) {
           $session->set('view', False);
           $session->set('edit', True);
         }
-        return $app->redirect('/'.$url.'/edit');
+        return $app->redirect('/milinks/web/index.php/'.$url.'/edit');
       }
       else{
         $app->abort(401, "password incorrect");
@@ -96,7 +96,7 @@ $app->post('/{url}/edit', function($url, Request $request) use($app) {
     case "changeUrl" :
       $new_url = $request->get('new_url');
       changeUrl($url,$new_url);
-      return $app->redirect('/'.$new_url.'/view');
+      return $app->redirect('/milinks/web/index.php/'.$new_url.'/view');
     default :
       $app->abort(403, "wallah le problème");
   }

@@ -8,12 +8,15 @@ function generateUrl(){
 	for ($i = 0; $i < 7; $i++) {
 	    $url .= $pool[rand(0, strlen($pool) - 1)];
 	}
-	$validation = $pdo->query("SELECT `id` FROM `note` WHERE `id` = '$url'");
-	if($validation->rowCount() > 0) {
-		generateUrl();
+	$stmt = $pdo->prepare("SELECT * from note where id = :url");
+	$stmt->bindParam(':url', $url);
+	$stmt->execute();
+	$result=$stmt->fetch(PDO::FETCH_ASSOC);
+	if(empty($result)) {
+		return $url;
     }
     else {
-        return $url;	
+        generateUrl();	
     }
 }
 
@@ -21,8 +24,11 @@ function generateUrl(){
 function checkUrl($url){
 	if ( strlen($url) < 10 and ctype_alnum($url) ) { //si url < 10 caracteres et si elle est alphanumeric
 		global $pdo; // get PDO connection
-		$validation = $pdo->query("SELECT `id` FROM `note` WHERE `id` = '$url'");
-		return ($validation->rowCount() > 0);
+		$stmt = $pdo->prepare("SELECT * from note where id = :url");
+		$stmt->bindParam(':url', $url);
+		$stmt->execute();
+		$result=$stmt->fetch(PDO::FETCH_ASSOC);
+		return (empty($result));
 	}
 	else {
 		return False;

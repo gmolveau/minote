@@ -2,18 +2,27 @@
 
 function getContent($url){
 	global $pdo;
-	$recup = $pdo->query("SELECT `content` FROM `note` WHERE `id` = '$url'");
-	return $recup['content'];
+	$stmt = $pdo->prepare("SELECT content from note where id = :url");
+	$stmt->bindParam(':url', $url);
+	$stmt->execute();
+	$result=$stmt->fetch(PDO::FETCH_ASSOC);
+	return $result['content'];
 }
 
 function isViewProtected($url){
 	global $pdo;
-	$editProt = $pdo->query("SELECT pwdEdit FROM note WHERE id = $url");
-	return ($editProt->rowCount()>0);
+	$stmt = $pdo->prepare("SELECT pwdView from note where id = :url");
+	$stmt->bindParam(':url', $url);
+	$stmt->execute();
+	$result=$stmt->fetch(PDO::FETCH_ASSOC);
+	return (empty($pwdView));
 }
 
 function verifyPassword($url,$pwd){
 	global $pdo;
-	$recup = $pdo->query("SELECT `pwdView` FROM `note` WHERE `id` = '$url'");
-	return password_verify($pwd,$recup['pwdView']);
+	$stmt = $pdo->prepare("SELECT pwdView from note where id = :url");
+	$stmt->bindParam(':url', $url);
+	$stmt->execute();
+	$result=$stmt->fetch(PDO::FETCH_ASSOC);
+	return password_verify($pwd,$result['pwdView']);
 }
