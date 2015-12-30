@@ -24,6 +24,7 @@ $app->get('/{url}', function($url) use ($app) {
 $app->get('/{url}/view', function($url) use ($app) {
     require '../src/model_note_view.php';
     if(!isViewProtected($url)){
+      echo "pas view protected";
       $content=getContent($url);
       return $app['twig']->render('view_note_view.html.twig',array('content' => $content, 'url' => $url));
     }
@@ -34,14 +35,9 @@ $app->get('/{url}/view', function($url) use ($app) {
             $content=getContent($url);
             return $app['twig']->render('view_note_view.html.twig',array('content' => $content, 'url' => $url));
           }
-          else{
-            return $app['twig']->render('view_note_protected.html.twig',array('type'=>'view'));
-          }
-        }
-        else{
-          return $app['twig']->render('view_note_protected.html.twig',array('type'=>'view'));
         }
       }
+      return $app['twig']->render('view_note_protected.html.twig',array('type'=>'view'));
     }
 /*
     if( (isset($session) and $session->get('id')==$url and $session->get('view')) or !isViewProtected($url) ){
@@ -99,6 +95,7 @@ $app->get('/{url}/edit', function($url) use ($app) {
         }
       }
       return $app['twig']->render('view_note_protected.html.twig',array('type'=>'edit'));
+    }                                 
 });
 
 // la méthode POST sur la view de chaque note
@@ -111,7 +108,7 @@ $app->post('/{url}/edit', function($url) use($app) {
   switch($type) {
     case "edit" :
       $password = $app['request']->get('password');
-      if (verifyPassword($url,$pwd)) {
+      if (verifyPassword($url,$password)) {
         if(isset($session) and $session->get('id')==$url){
           $session->set('edit', True);
         }
