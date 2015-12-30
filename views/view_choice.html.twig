@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Theme Made By www.w3schools.com - No Copyright -->
-  <title>Bootstrap Theme Simply Me</title>
-   <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{{ app.request.basepath }}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ app.request.basepath }}/lib/css/style.css" rel="stylesheet">
-    <link href="{{ app.request.basepath }}/lib/css/font-awesome.min.css" rel="stylesheet">
-</head>
-<body>
+{% extends "template.html" %}
+{% block content %}
 
-<!-- Second Container -->
 <div class="container-fluid text-center">
   <div id="view">
     <a href="view">
@@ -28,11 +16,5 @@
   </div>
 </div>
 
-<!-- Footer -->
-<script src="{{ app.request.basepath }}/web/lib/jquery/jquery.min.js"></script>
-<script src="{{ app.request.basepath }}/lib/bootstrap/js/bootstrap.min.js"></script>
-</body>
-</html>
-
-
+{% endblock %}
         
