@@ -1,5 +1,4 @@
 <?php
-echo "test";
 //main controller
 require_once __DIR__.'/../vendor/autoload.php';
 

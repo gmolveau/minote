@@ -20,40 +20,50 @@ $app->get('/{url}', function($url) use ($app) {
     }
 });
 
-
+// la view pour chaque note
 $app->get('/{url}/view', function($url) use ($app) {
     require '../src/model_note_view.php';
     if( (isset($session) and $session->get('id')==$url and $session->get('view')) or !isViewProtected($url) ){
+    // si une session existe ET si le parametre 'id' de cette session est egal à l'url 
+    // ET si le parametre 'view' qui est un booléen est True; OU ALORS si la view n'est PAS protected
       $content=getContent($url);
       return $app['twig']->render('view_note_view.html.twig',array('content' => $content));
     }
     else{
+    //sinon : donc si pas de session ou pas pas le bon id ou pas le droit de view ou si elle est protected
       return $app['twig']->render('view_note_view_protected.html.twig');
     }
 });
 
+// la méthode POST sur la view de chaque note
+// la seule methode POST qui aura lieu sur la view d'une note est le LOGIN
 $app->post('/{url}/view', function($url, Request $request) use($app){
   $password = $request->get('password'); //on recupere le mot de passe de la requete POST
   if( verifyPassword($url,$pwd) ){
+  // on verifie si le password entré est égal à celui de la DB
     if(isset($session) and $session->get('id')==$url){
-      $session->set('view', True);
+    // si la session existe deja avec le parametre id egal à l'url
+      $session->set('view', True); //on modifie juste son droit sur le 'view'
     }
     else{
+    // sinon donc la session existe pas OU l'id nest pas le bon
       $session = new Session();
       $session->start();
-      // set and get session attributes
+      // on crée la session et on rentre les parametres
       $session->set('id', $url);
       $session->set('view', True);
       $session->set('edit', False);
     }
   }
-  return $app->redirect('/'.$url.'/view');
+  return $app->redirect('/'.$url.'/view'); //dans tous les cas on redirige vers la view elle même 
 });
 
-
+// l'edit pour chaque note
 $app->get('/{url}/edit', function() use ($app) {
   require '../src/model_note_edit.php'; //appel du model
   if( (isset($session) and $session->get('id')==$url and $session->get('edit')) or !isEditProtected($url) ){
+  // si une session existe ET si le parametre 'id' de cette session est egal à l'url 
+  // ET si le parametre 'edit' qui est un booléen est True; OU ALORS si l'edit' n'est PAS protected
       $content=getContent($url);
       return $app['twig']->render('view_note_edit.html.twig',array('content' => $content));
   }
@@ -62,9 +72,13 @@ $app->get('/{url}/edit', function() use ($app) {
   }
 });
 
+// la méthode POST sur la view de chaque note
+// il y'aura plusieurs POST possibles vers cette page cest pour cela qu'on fait un switch
 $app->post('/{url}/edit', function($url, Request $request) use($app) { 
   require '../src/model_note_edit.php';
-  $type = $request->get('type'); //login | protectView | protectEdit | changeUrl
+  $type = $request->get('type'); // 'type' sera un champ caché dans tous les formulaires
+  // on fera varier sa valeur selon le cas
+  // login | protectView | protectEdit | changeUrl
   switch($type) {
     case "login" :
       $password = $request->get('password');
@@ -102,31 +116,22 @@ $app->post('/{url}/edit', function($url, Request $request) use($app) {
   }
 });
 
-
+// methode PUT pour l'edit de chaque note
 $app->put('/{url}/edit', function($url, Request $request) use($app) {
   if( (isset($session) and $session->get('id')==$url and $session->get('edit')) or !isEditProtected($url) ){
+  // on verifie si l'utilisateur qui envoie cette requete a le droit de faire cet update
     $content = $request->get('content');
     updateNote($url,$content);
     return True;
   }
   else{
-    return False;
+    return False; // sinon on arrete
   }
 });
 
-/* Toutes les notes */
+// page demandée par le professeur
 $app->get('/notes', function () use ($app) {
     require '../src/model_notes.php'; //appel du model
     $all_notes = get_all_notes(); // appel de la fonction pour récupérer la liste des notes
     return $app['twig']->render('view_notes.html.twig', array('all_notes' => $all_notes)); //appel du view
 });
-
-
-/*
-
-DANS LA VARIABLE $_SESSION il y aura :
-'id' [str] qui sera l'id de la note
-'view' [bool]
-'edit' [bool]
-
-*/
