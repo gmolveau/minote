@@ -1,0 +1,9 @@
+{% extends "template.html" %}
+{% block content %}
+
+<form action="#" method="post" accept-charset="utf-8">
+	<input type='password' id="password" name="password" autofocus required placeholder="password required ..."/>
+	<input type='hidden' name='type' value='{{type}}' id='type' />
+	<input type='submit' value="leggo"/>
+</form>
+{% endblock %}
