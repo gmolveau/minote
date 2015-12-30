@@ -28,7 +28,7 @@ function isEditProtected($url){
 function protectEdit($url,$password){
 	global $pdo;
 	$hash = password_hash($password, PASSWORD_DEFAULT);
-	if !isSaved($url){
+	if(!isSaved($url)){
 		try{
 			$stmt=$pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
 			$stmt->bindParam(':url', $url);
@@ -66,7 +66,7 @@ function protectEdit($url,$password){
 function protectView($url,$password){
 	global $pdo;
 	$hash = password_hash($password, PASSWORD_DEFAULT);
-	if !isSaved($url){
+	if ( !isSaved($url) ){
 		try{
 			$stmt=$pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
 			$stmt->bindParam(':url', $url);
