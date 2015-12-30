@@ -60,7 +60,7 @@ $app->post('/{url}/view', function($url, Request $request) use($app){
 });
 
 // l'edit pour chaque note
-$app->get('/{url}/edit', function() use ($app) {
+$app->get('/{url}/edit', function($url) use ($app) {
   require '../src/model_note_edit.php'; //appel du model
   if( (isset($session) and $session->get('id')==$url and $session->get('edit')) or !isEditProtected($url) ){
   // si une session existe ET si le parametre 'id' de cette session est egal à l'url 
