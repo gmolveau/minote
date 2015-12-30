@@ -143,7 +143,7 @@ function getContent($url){
  */
 function updateNote($url,$content){
 	global $pdo;
-	if !isSaved($url){
+	if(!isSaved($url)){
 		try{
 			$stmt=$pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
 			$stmt->bindParam(':url', $url);
