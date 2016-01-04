@@ -1,6 +1,59 @@
 {% extends "template.html" %}
-{% block content %}
+{% block head %}
+<link href="{{ app.request.basepath }}/lib/css/view_note.css" rel="stylesheet">
+<link href="{{ app.request.basepath }}/lib/simplemde/simplemde.min.css" rel="stylesheet">
+{% endblock %}
 
+{% block body %}
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">MILINKS</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="http://milinks.info/notes">Notes</a></li>
+        <button type="button" id='changeUrl' class="btn btn-default navbar-btn">Change URL</button>
+        <button type="button" id='protectView' class="btn btn-default navbar-btn">Protect View</button>
+        <button type="button" id='protectEdit' class="btn btn-default navbar-btn">Protect Edit</button>
+        <button type="button" id='save' class="btn btn-default navbar-btn">Save</button>
+      </ul>
+      <p class="navbar-text navbar-right">{{url | raw }}</p>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div class='container-fluid'>
+	<div class="clo-sm-offset-2 col-sm-8">
+		<h2>The following note is : {{url}}</h2>
+		<hr />
+		<div id="editor">
+		  <div v-html="input | marked">{{content}}</div>
+		</div>
+	</div>
+</div>
+<!-- 
+$.ajax({ url: '/', type: ‘PUT’, success: function(result) { // Do something with the result } }); //le put
+$.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //login
+$.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //protect view
+$.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //protect edit
+$.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //change url
+-->
+{% endblock %}
 
+{% block foot %}
+<script>
+new Vue({
+  el: '#editor',
+  filters: {
+    marked: marked
+  }
+})
+</script>
 <script src="{{ app.request.basepath }}/web/lib/js/vue.min.js"></script>
 {% endblock %}
