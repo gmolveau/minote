@@ -2,9 +2,6 @@
     "require": {
         "silex/silex": "1.3.*",
 		"csanquer/pdo-service-provider": "1.0",
-		"twig/twig": "*",
-        "twitter/bootstrap": "*",
-        "components/jquery": "1.11.*",
-        "fortawesome/font-awesome": "*"
+		"twig/twig": "*"
 	}
 }

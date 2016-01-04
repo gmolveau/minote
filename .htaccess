@@ -1,0 +1,2 @@
+FallbackResource web/index.php
+RewriteBase web/
