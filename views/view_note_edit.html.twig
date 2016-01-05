@@ -5,7 +5,7 @@
 <link href="{{ app.request.basepath }}/lib/sweetalert/sweetalert.css" rel="stylesheet">
 {% endblock %}
 
-{% block body %}
+{% block body %} 
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -15,34 +15,35 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">MILINKS</a>
+      <a class="navbar-brand" href="/">MILINKS</a>
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="http://milinks.info/notes">Notes</a></li>
+        <li><a href="http://milinks.info/notes" type="button" >Notes</a></li>
         <button type="button" id='changeUrl' class="btn btn-default navbar-btn">Change URL</button>
         <button type="button" id='protectView' class="btn btn-default navbar-btn">Protect View</button>
         <button type="button" id='protectEdit' class="btn btn-default navbar-btn">Protect Edit</button>
         <button type="button" id='save' class="btn btn-default navbar-btn">Save</button>
       </ul>
-      <p class="navbar-text navbar-right">{{url | raw }}</p>
+      <ul class="nav navbar-nav navbar-right">
+        <button type="button" class="btn btn-default navbar-btn">Note URL : {{url | raw }}</button>
+        <button type="button" id='whats' class="btn btn-default navbar-btn">About</button>
+      </ul>
+
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-<div class='container-fluid col-xs-6'>
-	<textarea id='content'>
-		{{content | raw}}
-	</textarea>
-</div>
-<div class='container-fluid col-xs-6'>
-	<textarea id='render'>
-	</textarea>
-</div>
+	<div id="editor" class='container-fluid'>
+    <textarea id="content" v-model="input" debounce="300" class="col-xs-6">{{content}}</textarea>
+    <div class="col-xs-6" id="render" v-html="input | marked"></div>
+  </div>
+
 {% endblock %}
 
 {% block foot %}
-<script src="{{ app.request.basepath }}/lib/simplemde/simplemde.min.js"></script>
 <script src="{{ app.request.basepath }}/lib/sweetalert/sweetalert.min.js"></script>
+<script src="{{ app.request.basepath }}/lib/js/marked.min.js"></script>
+<script src="{{ app.request.basepath }}/lib/js/vue.min.js"></script>
 <script>
 url = '{{url | raw }}';
 </script>

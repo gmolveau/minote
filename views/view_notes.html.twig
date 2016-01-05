@@ -1,10 +1,29 @@
 {% extends "template.html" %}
-{% block content %}
+{% block body %}
+<style>
+   li{
+     list-style-type:none;
+   }
+</style>
 <!-- Second Container -->
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">MILINKS</a>
+    </div>
+   </div><!-- /.container-fluid -->
+</nav>
+
 <div class="container-fluid bg-2 text-center">
   <ul>
   {% for note in all_notes %}
-         <li>{{ note.id }}</li>
+         <li><a href="http://milinks.info/{{ note.id }}">{{ note.id }}</a></li>
   {% endfor %}
   </ul>
 </div>

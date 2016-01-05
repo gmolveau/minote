@@ -1,11 +1,44 @@
 {% extends "template.html" %}
+{% block head %}
+<link href="{{ app.request.basepath }}/lib/sweetalert/sweetalert.css" rel="stylesheet">
+{% endblock %}
 
-{% block content %}
-
-<form action="#" method="post" accept-charset="utf-8">
-	<input type='password' id="password" name="password" autofocus required placeholder="password required ..."/>
-	<input type='hidden' name='type' value='{{type}}' id='type' />
-	<input type='submit' value="leggo"/>
-</form>
-
+{% block foot %}
+<script src="{{ app.request.basepath }}/lib/sweetalert/sweetalert.min.js"></script>
+<script>
+$(document).keydown(function(e) {
+    if (e.keyCode == 27) return false;
+});
+  url = '{{url}}';
+  $( document ).ready(function() {
+      swal({
+      title: "Password Required",
+      text: "Enter the password to {{ type | raw }} the note :",
+      type: "input",
+      inputType:"password",
+      showCancelButton: false,
+      closeOnConfirm: false,
+      animation: "slide-from-top",
+      inputPlaceholder: "supr4 p@55w0rd"
+    },
+    function(inputValue) {
+            if (inputValue === false) return false;
+      if (inputValue === "") {
+        swal.showInputError("Nope, you must write something ;) ");
+        return false;
+      }
+      var datastring = 'type=login&url=' + url + '&password=' + inputValue;
+      console.log(datastring);
+      $.ajax({
+        type: "POST",
+        url: "#",
+        data: datastring,
+        success: function(html) {
+          swal("Nice!", "success");
+          window.location.href = '/'+ url +'/edit';
+        }
+      });
+    });
+});
+</script>
 {% endblock %}
