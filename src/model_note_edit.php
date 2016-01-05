@@ -9,13 +9,13 @@ function isEditProtected($url){
 	global $pdo;
 	try{
 		$stmt=$pdo->prepare("SELECT pwdEdit from note where id = :url");
-		$stmt->bindParam(':url', $url);
+		$stmt->bindValue(':url', $url, PDO::PARAM_STR);
 		$stmt->execute();
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
 		return (!empty($result['pwdEdit']));
 	}
 	catch( PDOException $e ) {
-    	throw( $e->getMessage( ));
+    	throw ($e);
 	}
 }
 /**
@@ -27,33 +27,36 @@ function isEditProtected($url){
  */
 function protectEdit($url,$password){
 	global $pdo;
+	return true;
+	/*
 	$hash = password_hash($password, PASSWORD_DEFAULT);
 	if(!isSaved($url)){
 		try{
 			$stmt=$pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
-			$stmt->bindParam(':url', $url);
-			$stmt->bindParam(':content', null);
-			$stmt->bindParam(':pwdView', null);
-			$stmt->bindParam(':pwdEdit', $hash);
+			$stmt->bindValue(':url', $url, PDO::PARAM_STR);
+			$stmt->bindValue(':content', null);
+			$stmt->bindValue(':pwdView', null);
+			$stmt->bindValue(':pwdEdit', $hash, PDO::PARAM_STR);
 			$stmt->execute();
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ));
+    		throw ($e);
 		}
 	}
 	else{
 		try{
 			$stmt=$pdo->prepare("UPDATE note SET pwdEdit = :pwdEdit WHERE id = :url");
-			$stmt->bindParam(':url', $url);
-			$stmt->bindParam(':pwdEdit', $hash);
+			$stmt->bindValue(':url', $url, PDO::PARAM_STR);
+			$stmt->bindValue(':pwdEdit', $hash, PDO::PARAM_STR);
 			$stmt->execute();
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ));
+    		throw ($e);
 		}
 	}
+	*/
 }
 
 /**
@@ -69,27 +72,27 @@ function protectView($url,$password){
 	if ( !isSaved($url) ){
 		try{
 			$stmt=$pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
-			$stmt->bindParam(':url', $url);
-			$stmt->bindParam(':content', null);
-			$stmt->bindParam(':pwdView', $hash);
-			$stmt->bindParam(':pwdEdit', null);
+			$stmt->bindValue(':url', $url, PDO::PARAM_STR);
+			$stmt->bindValue(':content', null);
+			$stmt->bindValue(':pwdView', $hash, PDO::PARAM_STR);
+			$stmt->bindValue(':pwdEdit', null);
 			$stmt->execute();
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ));
+    		throw ($e);
 		}
 	}
 	else{
 		try{
 			$stmt=$pdo->prepare("UPDATE note SET pwdView = :pwdView WHERE id = :url");
-			$stmt->bindParam(':url', $url);
-			$stmt->bindParam(':pwdView', $hash);
+			$stmt->bindValue(':url', $url, PDO::PARAM_STR);
+			$stmt->bindValue(':pwdView', $hash, PDO::PARAM_STR);
 			$stmt->execute();
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ));
+    		throw ($e);
 		}
 	}
 }
@@ -105,13 +108,13 @@ function verifyPassword($url,$pwd){
 	global $pdo;
 	try{
 		$stmt=$pdo->prepare("SELECT pwdEdit from note where id = :url");
-		$stmt->bindParam(':url', $url);
+		$stmt->bindValue(':url', $url, PDO::PARAM_STR);
 		$stmt->execute();
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
 		return password_verify($pwd,$result['pwdEdit']);
 	}
 	catch( PDOException $e ) {
-    	throw( $e->getMessage( ));
+    	throw ($e);
 	}
 }
 
@@ -125,12 +128,12 @@ function getContent($url){
 	global $pdo;
 	try{
 		$stmt=$pdo->prepare("SELECT content from note where id = :url");
-		$stmt->bindParam(':url', $url);
+		$stmt->bindValue(':url', $url, PDO::PARAM_STR);
 		$stmt->execute();
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
 		return $result['content'];
 	}catch( PDOException $e ) {
-    	throw( $e->getMessage( ));
+    	throw ($e);
 	}
 }
 
@@ -146,27 +149,27 @@ function updateNote($url,$content){
 	if(!isSaved($url)){
 		try{
 			$stmt=$pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
-			$stmt->bindParam(':url', $url);
-			$stmt->bindParam(':content', $content);
-			$stmt->bindParam(':pwdView', null);
-			$stmt->bindParam(':pwdEdit', null);
+			$stmt->bindValue(':url', $url, PDO::PARAM_STR);
+			$stmt->bindValue(':content', $content, PDO::PARAM_STR);
+			$stmt->bindValue(':pwdView', null);
+			$stmt->bindValue(':pwdEdit', null);
 			$stmt->execute();
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ));
+    		throw ($e);
 		}
 	}
 	else{
 		try{
 			$stmt=$pdo->prepare("UPDATE note SET content = :content WHERE id = :url");
-			$stmt->bindParam(':url', $url);
-			$stmt->bindParam(':content', $content);
+			$stmt->bindValue(':url', $url, PDO::PARAM_STR);
+			$stmt->bindValue(':content', $content, PDO::PARAM_STR);
 			$stmt->execute();
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ));
+    		throw ($e);
 		}
 	}
 }
@@ -181,13 +184,13 @@ function isSaved($url){
 	global $pdo;
 	try{
 		$stmt=$pdo->prepare("SELECT id from note where id = :url");
-		$stmt->bindParam(':url', $url);
+		$stmt->bindValue(':url', $url, PDO::PARAM_STR);
 		$stmt->execute();
 		$result=$stmt->fetch(PDO::FETCH_ASSOC);
 		return (!empty($result) or !empty($result['id']));
 	}
 	catch( PDOException $e ) {
-    	throw( $e->getMessage( ));
+    	throw ($e);
 	}
 }
 
@@ -204,13 +207,13 @@ function changeUrl($url,$new_url){
 		global $pdo;
 		try{
 			$stmt = $pdo->prepare("UPDATE note SET id = :new_url WHERE id = :url");
-			$stmt->bindParam(':new_url', $new_url);
-			$stmt->bindParam(':url', $url);
+			$stmt->bindValue(':new_url', $new_url, PDO::PARAM_STR);
+			$stmt->bindValue(':url', $url, PDO::PARAM_STR);
 			$stmt->execute();
 			return True;
 		}
 		catch( PDOException $e ) {
-    		throw( $e->getMessage( ));
+    		throw ($e);
 		}
 	}
 	else{

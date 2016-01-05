@@ -2,6 +2,7 @@
 {% block head %}
 <link href="{{ app.request.basepath }}/lib/css/view_note.css" rel="stylesheet">
 <link href="{{ app.request.basepath }}/lib/simplemde/simplemde.min.css" rel="stylesheet">
+<link href="{{ app.request.basepath }}/lib/sweetalert/sweetalert.css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
@@ -37,23 +38,15 @@
 	<textarea id='render'>
 	</textarea>
 </div>
-<!-- 
-$.ajax({ url: '/', type: ‘PUT’, success: function(result) { // Do something with the result } }); //le put
-$.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //login
-$.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //protect view
-$.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //protect edit
-$.ajax({ url: '/', type: 'POST', success: function(result) { // Do something with the result } }); //change url
--->
 {% endblock %}
 
 {% block foot %}
 <script src="{{ app.request.basepath }}/lib/simplemde/simplemde.min.js"></script>
+<script src="{{ app.request.basepath }}/lib/sweetalert/sweetalert.min.js"></script>
 <script>
-	var simplemde = new SimpleMDE({ 
-		element: $("#content")[0],
-		
-	});
+url = '{{url | raw }}';
 </script>
+<script src="{{ app.request.basepath }}/lib/js/note_edit.js"></script>
 {% endblock %}
 
 

@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 ErrorHandler::register();
 ExceptionHandler::register();
 
+error_reporting(-1);
+ini_set('display_errors', 'On');
+
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
 ));
