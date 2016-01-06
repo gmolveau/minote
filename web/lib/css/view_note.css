@@ -12,7 +12,6 @@ textarea, #editor div {
 
 textarea {
   border: none;
-
   resize: none;
   outline: none;
   background-color: #f6f6f6;
@@ -27,19 +26,8 @@ textarea {
 
 #editor div{
 	height: 100%;
-	overflow: scroll;
+  overflow: scroll;
 }
 code {
   color: #f66;
-}
-
-::-webkit-scrollbar {
-    width: 1em;
-}
- 
-
- 
-::-webkit-scrollbar-thumb {
-  background-color: darkgrey;
-  outline: 1px solid slategrey;
 }

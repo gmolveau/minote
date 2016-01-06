@@ -43,4 +43,5 @@ $app->register(
     )
 ));
 // get PDO connection
+$app['pdo']->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo = $app['pdo'];

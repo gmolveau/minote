@@ -45,11 +45,21 @@ function protectEdit($url, $password)
         }
     } else {
         try {
-            $stmt = $pdo->prepare("UPDATE note SET pwdEdit = :pwdEdit WHERE id = :url");
-            $stmt->bindValue(':url', $url, PDO::PARAM_STR);
-            $stmt->bindValue(':pwdEdit', $hash, PDO::PARAM_STR);
-            $stmt->execute();
-            return True;
+            if($password==null or $password==""){
+                $stmt = $pdo->prepare("UPDATE note SET pwdEdit = :pwdEdit WHERE id = :url");
+                $stmt->bindValue(':url', $url, PDO::PARAM_STR);
+                $stmt->bindValue(':pwdEdit', null);
+                $stmt->execute();
+                return true;
+            }
+            else{
+                $hash = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $pdo->prepare("UPDATE note SET pwdEdit = :pwdEdit WHERE id = :url");
+                $stmt->bindValue(':url', $url, PDO::PARAM_STR);
+                $stmt->bindValue(':pwdEdit', $hash, PDO::PARAM_STR);
+                $stmt->execute();
+                return true;
+            }
         }
         catch (PDOException $e) {
             throw ($e);
@@ -69,9 +79,10 @@ function protectEdit($url, $password)
 function protectView($url, $password)
 {
     global $pdo;
-    $hash = password_hash($password, PASSWORD_DEFAULT);
+    
     if (!isSaved($url)) {
         try {
+            $hash = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
             $stmt->bindValue(':url', $url, PDO::PARAM_STR);
             $stmt->bindValue(':content', null);
@@ -85,11 +96,21 @@ function protectView($url, $password)
         }
     } else {
         try {
-            $stmt = $pdo->prepare("UPDATE note SET pwdView = :pwdView WHERE id = :url");
-            $stmt->bindValue(':url', $url, PDO::PARAM_STR);
-            $stmt->bindValue(':pwdView', $hash, PDO::PARAM_STR);
-            $stmt->execute();
-            return True;
+            if($password==null or $password==""){
+                $stmt = $pdo->prepare("UPDATE note SET pwdView = :pwdView WHERE id = :url");
+                $stmt->bindValue(':url', $url, PDO::PARAM_STR);
+                $stmt->bindValue(':pwdView', '', PDO::PARAM_STR);
+                $stmt->execute();
+                return true;
+            }
+            else{
+                $hash = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $pdo->prepare("UPDATE note SET pwdView = :pwdView WHERE id = :url");
+                $stmt->bindValue(':url', $url, PDO::PARAM_STR);
+                $stmt->bindValue(':pwdView', $hash, PDO::PARAM_STR);
+                $stmt->execute();
+                return true;
+            }
         }
         catch (PDOException $e) {
             throw ($e);

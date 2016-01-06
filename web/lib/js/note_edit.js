@@ -48,7 +48,10 @@ $("#protectView").click(function() {
       inputPlaceholder: "password"
     },
     function(inputValue) {
-            if (inputValue === false) return false;
+      if (inputValue === false) return false;
+      if (inputValue === "") {
+        inputValue="";
+      }
       var datastring = 'type=protectView&url=' + url + '&password=' + inputValue;
       console.log(datastring);
       $.ajax({
@@ -74,6 +77,9 @@ $("#protectEdit").click(function() {
     },
     function(inputValue) {
       if (inputValue === false) return false;
+      if (inputValue === "") {
+        inputValue="";
+      }
       var datastring = 'type=protectEdit&url=' + url + '&password=' + inputValue;
       console.log(datastring);
       $.ajax({

@@ -4,7 +4,7 @@ $app->get('/', function() use ($app)
 {
     require '../src/model_index.php';
     $url = generateUrl();
-    return $app->redirect('/' . $url);
+    return $app->redirect('/' . $url . '/edit');
 });
 
 //arrivée avec url deja connue
@@ -19,13 +19,17 @@ $app->get('/{url}', function($url) use ($app)
     } else {
         require '../src/model_index.php';
         if (checkUrl($url)) {
-            return $app->redirect('/' . $url . '/edit');
+            return $app->redirect('/' . $url . '/view');
         } else {
             $app->abort(404, "l'url \" $url \" is not a valid one. Must be alphanumeric and less than 10 characters.");
         }
     }
 });
 
+$app->get('/{url}/', function($url) use ($app)
+{
+    return $app->redirect('/' . $url);
+});
 // la view pour chaque note
 $app->get('/{url}/view', function($url) use ($app)
 {
@@ -65,6 +69,12 @@ $app->get('/{url}/view', function($url) use ($app)
     return $app['twig']->render('view_note_protected.html.twig',array('type'=>'view'));
     }
     */
+});
+
+// gestion du cas du / rajouté à la fin
+$app->get('/{url}/view/', function($url) use ($app)
+{
+    return $app->redirect('/' . $url . '/view');
 });
 
 // la méthode POST sur la view de chaque note
@@ -119,6 +129,11 @@ $app->get('/{url}/edit', function($url) use ($app)
     }
 });
 
+//gestion du cas du / rajouté à la fin
+$app->get('/{url}/edit/', function($url) use ($app)
+{
+    return $app->redirect('/' . $url . '/edit');
+});
 // la méthode POST sur la view de chaque note
 // il y'aura plusieurs POST possibles vers cette page cest pour cela qu'on fait un switch
 $app->post('/{url}/edit', function($url) use ($app)
