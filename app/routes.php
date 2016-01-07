@@ -2,7 +2,7 @@
 // arrivée standard
 $app->get('/', function() use ($app)
 {
-    require '../src/model_index.php';
+    require './src/model_index.php';
     $url = generateUrl();
     return $app->redirect('/' . $url . '/edit');
 });
@@ -11,13 +11,13 @@ $app->get('/', function() use ($app)
 $app->get('/{url}', function($url) use ($app)
 {
     if ($url == "notes") {
-        require '../src/model_notes.php'; //appel du model
+        require './src/model_notes.php'; //appel du model
         $all_notes = get_all_notes(); // appel de la fonction pour récupérer la liste des notes
         return $app['twig']->render('view_notes.html.twig', array(
             'all_notes' => $all_notes
         )); //appel du view
     } else {
-        require '../src/model_index.php';
+        require './src/model_index.php';
         if (checkUrl($url)) {
             return $app->redirect('/' . $url . '/view');
         } else {
@@ -33,7 +33,7 @@ $app->get('/{url}/', function($url) use ($app)
 // la view pour chaque note
 $app->get('/{url}/view', function($url) use ($app)
 {
-    require '../src/model_note_view.php';
+    require './src/model_note_view.php';
     if (!isViewProtected($url)) {
         $content = getContent($url);
         return $app['twig']->render('view_note_view.html.twig', array(
@@ -81,7 +81,7 @@ $app->get('/{url}/view/', function($url) use ($app)
 // la seule methode POST qui aura lieu sur la view d'une note est le LOGIN
 $app->post('/{url}/view', function($url) use ($app)
 {
-    require '../src/model_note_view.php';
+    require './src/model_note_view.php';
     $password = $app['request']->get('password'); //on recupere le mot de passe de la requete POST
     if (verifyPassword($url, $password)) {
         // on verifie si le password entré est égal à celui de la DB
@@ -103,7 +103,7 @@ $app->post('/{url}/view', function($url) use ($app)
 // l'edit pour chaque note
 $app->get('/{url}/edit', function($url) use ($app)
 {
-    require '../src/model_note_edit.php'; //appel du model
+    require './src/model_note_edit.php'; //appel du model
     if (!isEditProtected($url)) {
         $content = getContent($url);
         return $app['twig']->render('view_note_edit.html.twig', array(
@@ -138,7 +138,7 @@ $app->get('/{url}/edit/', function($url) use ($app)
 // il y'aura plusieurs POST possibles vers cette page cest pour cela qu'on fait un switch
 $app->post('/{url}/edit', function($url) use ($app)
 {
-    require '../src/model_note_edit.php';
+    require './src/model_note_edit.php';
     $type = $app['request']->get('type'); // 'type' sera un champ caché dans tous les formulaires
     // on fera varier sa valeur selon le cas
     // login | protectView | protectEdit | changeUrl
