@@ -1,18 +1,10 @@
 {% extends "template.html" %}
 {% block head %}
 <link href="{{ app.request.basepath }}/lib/css/view_note.css" rel="stylesheet">
+<link href="{{ app.request.basepath }}/lib/css/view_note_view.css" rel="stylesheet">
 <link href="{{ app.request.basepath }}/lib/simplemde/simplemde.min.css" rel="stylesheet">
 <link href="{{ app.request.basepath }}/lib/sweetalert/sweetalert.css" rel="stylesheet">
-<style>
-  textarea{
-    display:none;
-  }
-  #editor div{
-    width:100%;
-  }
 
-
-</style>
 {% endblock %}
 
 {% block body %}

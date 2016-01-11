@@ -5,13 +5,16 @@
  * generate a valid and not taken URL
  * @return string $url if success, call generateUrl (recursif) if url taken
  */
-function generateUrl()
+function generateUrl($pdo,$length = 5,$try = 0)
 {
-    global $pdo; // get PDO connection
-    // generate a <10 characters (numerical and alphabetical) string, not present in the DB ex: ajf63
+    // generate a <20 characters (numerical and alphabetical) string, not present in the DB ex: ajf63
+    if($try > $length*$length){
+        $length+=1;
+        $try=0;
+    }
     $pool = 'abcdefghijklmnopqrstuvwxyz0123456789';
     $url  = '';
-    for ($i = 0; $i < 7; $i++) {
+    for ($i = 0; $i < $length; $i++) {
         $url .= $pool[rand(0, strlen($pool) - 1)];
     }
     try {
@@ -26,7 +29,7 @@ function generateUrl()
     if (empty($result)) { // la requete n'a rien renvoyé donc url pas prise
         return $url;
     } else {
-        generateUrl();
+        generateUrl($length,$try+1);
     }
 }
 
@@ -38,5 +41,5 @@ function generateUrl()
  */
 function checkUrl($url)
 {
-    return (strlen($url) < 10 and ctype_alnum($url)); //si url < 10 caracteres et si elle est alphanumeric
+    return (strlen($url) < 20 and ctype_alnum($url)); //si url < 10 caracteres et si elle est alphanumeric
 }

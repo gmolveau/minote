@@ -42,6 +42,4 @@ $app->register(
         \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
     )
 ));
-// get PDO connection
-$app['pdo']->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-$pdo = $app['pdo'];
+

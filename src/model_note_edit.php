@@ -5,9 +5,9 @@
  * @return boolean true, if protected otherwise false
  * @return error message if exception catched during PDO
  */
-function isEditProtected($url)
+function isEditProtected($url,$pdo)
 {
-    global $pdo;
+    
     try {
         $stmt = $pdo->prepare("SELECT pwdEdit from note where id = :url");
         $stmt->bindValue(':url', $url, PDO::PARAM_STR);
@@ -26,9 +26,9 @@ function isEditProtected($url)
  * @return boolean true, if protected otherwise false
  * @return error message if exception catched during PDO
  */
-function isViewProtected($url)
+function isViewProtected($url,$pdo)
 {
-    global $pdo;
+    
     try {
         $stmt = $pdo->prepare("SELECT pwdView from note where id = :url");
         $stmt->bindValue(':url', $url, PDO::PARAM_STR);
@@ -49,10 +49,11 @@ function isViewProtected($url)
  * @return boolean true, if protected otherwise false
  * @return error message if exception catched during PDO
  */
-function protectEdit($url, $password)
+function protectEdit($url, $password,$pdo)
 {
-    global $pdo;
-    $hash = password_hash($password, PASSWORD_DEFAULT);
+    
+    require 'password_hash.php';
+    $hash = create_hash($password);
     if (!isSaved($url)) {
         try {
             $stmt = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
@@ -99,13 +100,13 @@ function protectEdit($url, $password)
  * @return boolean true, if success
  * @return error message if exception catched during PDO
  */
-function protectView($url, $password)
+function protectView($url, $password,$pdo)
 {
-    global $pdo;
     
     if (!isSaved($url)) {
         try {
-            $hash = password_hash($password, PASSWORD_DEFAULT);
+            require 'password_hash.php';
+            $hash = create_hash($password);
             $stmt = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
             $stmt->bindValue(':url', $url, PDO::PARAM_STR);
             $stmt->bindValue(':content', null);
@@ -127,7 +128,6 @@ function protectView($url, $password)
                 return true;
             }
             else{
-                $hash = password_hash($password, PASSWORD_DEFAULT);
                 $stmt = $pdo->prepare("UPDATE note SET pwdView = :pwdView WHERE id = :url");
                 $stmt->bindValue(':url', $url, PDO::PARAM_STR);
                 $stmt->bindValue(':pwdView', $hash, PDO::PARAM_STR);
@@ -148,15 +148,16 @@ function protectView($url, $password)
  * @return boolean true, if password matches
  * @return error message if exception catched during PDO
  */
-function verifyPassword($url, $pwd)
+function verifyPassword($url, $password,$pdo)
 {
-    global $pdo;
+    
     try {
+        require 'password_hash.php';
         $stmt = $pdo->prepare("SELECT pwdEdit from note where id = :url");
         $stmt->bindValue(':url', $url, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return password_verify($pwd, $result['pwdEdit']);
+        return validate_password($password, $result['pwdEdit']);
     }
     catch (PDOException $e) {
         throw ($e);
@@ -169,9 +170,9 @@ function verifyPassword($url, $pwd)
  * @return text if PDO successed
  * @return error message if exception catched during PDO
  */
-function getContent($url)
+function getContent($url,$pdo)
 {
-    global $pdo;
+    
     try {
         $stmt = $pdo->prepare("SELECT content from note where id = :url");
         $stmt->bindValue(':url', $url, PDO::PARAM_STR);
@@ -191,9 +192,9 @@ function getContent($url)
  * @return boolean true, if PDO success
  * @return error message if exception catched during PDO
  */
-function updateNote($url, $content)
+function updateNote($url, $content,$pdo)
 {
-    global $pdo;
+    
     if (!isSaved($url)) {
         try {
             $stmt = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
@@ -227,9 +228,9 @@ function updateNote($url, $content)
  * @return boolean true if saved in DB, false otherwise
  * @return error message if exception catched during PDO
  */
-function isSaved($url)
+function isSaved($url,$pdo)
 {
-    global $pdo;
+    
     try {
         $stmt = $pdo->prepare("SELECT id from note where id = :url");
         $stmt->bindValue(':url', $url, PDO::PARAM_STR);
@@ -251,12 +252,12 @@ function isSaved($url)
  */
 function checkUrl($url)
 {
-    return (strlen($url) < 10 and ctype_alnum($url)); //si url < 10 caracteres et si elle est alphanumeric
+    return (strlen($url) < 20 and ctype_alnum($url)); //si url < 10 caracteres et si elle est alphanumeric
 }
-function changeUrl($url, $new_url)
+function changeUrl($url, $new_url,$pdo)
 {
     if (checkUrl($new_url)) {
-        global $pdo;
+        
         try {
             $stmt = $pdo->prepare("UPDATE note SET id = :new_url WHERE id = :url");
             $stmt->bindValue(':new_url', $new_url, PDO::PARAM_STR);

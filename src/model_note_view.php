@@ -6,9 +6,8 @@
  * @return text if PDO successed
  * @return error message if exception catched during PDO
  */
-function getContent($url)
+function getContent($url,$pdo)
 {
-    global $pdo;
     try {
         $stmt = $pdo->prepare("SELECT content from note where id = :url");
         $stmt->bindValue(':url', $url, PDO::PARAM_STR);
@@ -27,9 +26,8 @@ function getContent($url)
  * @return boolean true, if protected otherwise false
  * @return error message if exception catched during PDO
  */
-function isViewProtected($url)
+function isViewProtected($url,$pdo)
 {
-    global $pdo;
     try {
         $stmt = $pdo->prepare("SELECT pwdView from note where id = :url");
         $stmt->bindValue(':url', $url, PDO::PARAM_STR);
@@ -49,9 +47,8 @@ function isViewProtected($url)
  * @return boolean true, if password matches
  * @return error message if exception catched during PDO
  */
-function verifyPassword($url, $pwd)
+function verifyPassword($url, $pwd,$pdo)
 {
-    global $pdo;
     try {
         $stmt = $pdo->prepare("SELECT pwdView from note where id = :url");
         $stmt->bindValue(':url', $url, PDO::PARAM_STR);
@@ -70,9 +67,8 @@ function verifyPassword($url, $pwd)
  * @return boolean true, if note is registered, false if not
  * @return error message if exception catched during PDO
  */
-function isSaved($url)
+function isSaved($url,$pdo)
 {
-    global $pdo;
     try {
         $stmt = $pdo->prepare("SELECT id from note where id = :url");
         $stmt->bindValue(':url', $url, PDO::PARAM_STR);
@@ -92,10 +88,10 @@ function isSaved($url)
  * @return boolean true, if password was added
  * @return error message if exception catched during PDO
  */
-function protectView($url, $password)
+function protectView($url, $password,$pdo)
 {
-    global $pdo;
-    $hash = password_hash($password, PASSWORD_DEFAULT);
+    require 'password_hash.php';
+    $hash = create_hash($password);
     if (!isSaved($url)) {
         try {
             $stmt = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");

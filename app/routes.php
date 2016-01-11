@@ -1,24 +1,27 @@
 <?php
 // arrivée standard
+$pdo = $app['pdo'];
 $app->get('/', function() use ($app)
 {
+    $pdo = $app['pdo'];
     require './src/model_index.php';
-    $url = generateUrl();
+    $url = generateUrl($pdo);
     return $app->redirect($url . '/edit');
 });
 
 //arrivée avec url deja connue
 $app->get('/{url}', function($url) use ($app)
 {
+    $pdo = $app['pdo'];
     if ($url == "notes") {
         require './src/model_notes.php'; //appel du model
-        $all_notes = get_all_notes(); // appel de la fonction pour récupérer la liste des notes
+        $all_notes = get_all_notes($pdo); // appel de la fonction pour récupérer la liste des notes
         return $app['twig']->render('view_notes.html.twig', array(
             'all_notes' => $all_notes
         )); //appel du view
     } else {
         require './src/model_index.php';
-        if (checkUrl($url)) {
+        if (checkUrl($url,$pdo)) {
             return $app->redirect($url . '/view');
         } else {
             $app->abort(404, "l'url \" $url \" is not a valid one. Must be alphanumeric and less than 10 characters.");
@@ -33,9 +36,10 @@ $app->get('/{url}/', function($url) use ($app)
 // la view pour chaque note
 $app->get('/{url}/view', function($url) use ($app)
 {
+    $pdo = $app['pdo'];
     require './src/model_note_view.php';
-    if (!isViewProtected($url)) {
-        $content = getContent($url);
+    if (!isViewProtected($url,$pdo)) {
+        $content = getContent($url,$pdo);
         return $app['twig']->render('view_note_view.html.twig', array(
             'content' => $content,
             'url' => $url
@@ -44,7 +48,7 @@ $app->get('/{url}/view', function($url) use ($app)
         if (isset($app['session'])) {
             if ($app['session']->get('id') == $url) {
                 if ($app['session']->get('view')) {
-                    $content = getContent($url);
+                    $content = getContent($url,$pdo);
                     return $app['twig']->render('view_note_view.html.twig', array(
                         'content' => $content,
                         'url' => $url
@@ -81,9 +85,10 @@ $app->get('/{url}/view/', function($url) use ($app)
 // la seule methode POST qui aura lieu sur la view d'une note est le LOGIN
 $app->post('/{url}/view', function($url) use ($app)
 {
+    $pdo = $app['pdo'];
     require './src/model_note_view.php';
     $password = $app['request']->get('password'); //on recupere le mot de passe de la requete POST
-    if (verifyPassword($url, $password)) {
+    if (verifyPassword($url, $password,$pdo)) {
         // on verifie si le password entré est égal à celui de la DB
         if (isset($app['session']) and $app['session']->get('id') == $url) {
             // si la session existe deja avec le parametre id egal à l'url
@@ -103,25 +108,26 @@ $app->post('/{url}/view', function($url) use ($app)
 // l'edit pour chaque note
 $app->get('/{url}/edit', function($url) use ($app)
 {
+    $pdo = $app['pdo'];
     require './src/model_note_edit.php'; //appel du model
-    if (!isEditProtected($url)) {
-        $content = getContent($url);
+    if (!isEditProtected($url,$pdo)) {
+        $content = getContent($url,$pdo);
         return $app['twig']->render('view_note_edit.html.twig', array(
             'content' => $content,
             'url' => $url,
-            'editProtected' => isEditProtected($url),
-            'viewProtected' => isViewProtected($url)
+            'editProtected' => isEditProtected($url,$pdo),
+            'viewProtected' => isViewProtected($url,$pdo)
         ));
     } else {
         if (isset($app['session'])) {
             if ($app['session']->get('id') == $url) {
                 if ($app['session']->get('edit')) {
-                    $content = getContent($url);
+                    $content = getContent($url,$pdo);
                     return $app['twig']->render('view_note_edit.html.twig', array(
                         'content' => $content,
                         'url' => $url,
-                        'editProtected' => isEditProtected($url),
-                        'viewProtected' => isViewProtected($url)
+                        'editProtected' => isEditProtected($url,$pdo),
+                        'viewProtected' => isViewProtected($url,$pdo)
                     ));
                 }
             }
@@ -142,6 +148,7 @@ $app->get('/{url}/edit/', function($url) use ($app)
 // il y'aura plusieurs POST possibles vers cette page cest pour cela qu'on fait un switch
 $app->post('/{url}/edit', function($url) use ($app)
 {
+    $pdo = $app['pdo'];
     require './src/model_note_edit.php';
     $type = $app['request']->get('type'); // 'type' sera un champ caché dans tous les formulaires
     // on fera varier sa valeur selon le cas
@@ -149,7 +156,7 @@ $app->post('/{url}/edit', function($url) use ($app)
     switch ($type) {
         case "login":
             $password = $app['request']->get('password');
-            if (verifyPassword($url, $password)) {
+            if (verifyPassword($url, $password,$pdo)) {
                 if (isset($app['session']) and $app['session']->get('id') == $url) {
                     $app['session']->set('edit', True);
                 } else {
@@ -164,25 +171,25 @@ $app->post('/{url}/edit', function($url) use ($app)
             }
         case "protectView":
             $password = $app['request']->get('password');
-            protectView($url, $password);
+            protectView($url, $password,$pdo);
             return true;
         case "protectEdit":
             $password = $app['request']->get('password');
-            protectEdit($url, $password);
+            protectEdit($url, $password,$pdo);
             return true;
         case "changeUrl":
             $new_url = $app['request']->get('new_url');
-            changeUrl($url, $new_url);
+            changeUrl($url, $new_url,$pdo);
             return true;
         case "save":
             if (!isEditProtected($url)) {
                 $content = $app['request']->get('content');
-                updateNote($url, $content);
+                updateNote($url, $content,$pdo);
                 return True;
             } else {
                 if ((isset($app['session']) and $app['session']->get('id') == $url and $app['session']->get('edit'))) {
                     $content = $app['request']->get('content');
-                    updateNote($url, $content);
+                    updateNote($url, $content,$pdo);
                     return True;
                 } else {
                     return False; // sinon on arrete
