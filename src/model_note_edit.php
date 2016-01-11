@@ -54,7 +54,7 @@ function protectEdit($url, $password,$pdo)
     
     require 'password_hash.php';
     $hash = create_hash($password);
-    if (!isSaved($url)) {
+    if (!isSaved($url,$pdo)) {
         try {
             $stmt = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
             $stmt->bindValue(':url', $url, PDO::PARAM_STR);
@@ -62,7 +62,7 @@ function protectEdit($url, $password,$pdo)
             $stmt->bindValue(':pwdView', null);
             $stmt->bindValue(':pwdEdit', $hash, PDO::PARAM_STR);
             $stmt->execute();
-            return True;
+            return true;
         }
         catch (PDOException $e) {
             throw ($e);
@@ -77,7 +77,6 @@ function protectEdit($url, $password,$pdo)
                 return true;
             }
             else{
-                $hash = password_hash($password, PASSWORD_DEFAULT);
                 $stmt = $pdo->prepare("UPDATE note SET pwdEdit = :pwdEdit WHERE id = :url");
                 $stmt->bindValue(':url', $url, PDO::PARAM_STR);
                 $stmt->bindValue(':pwdEdit', $hash, PDO::PARAM_STR);
@@ -102,11 +101,10 @@ function protectEdit($url, $password,$pdo)
  */
 function protectView($url, $password,$pdo)
 {
-    
-    if (!isSaved($url)) {
+    require 'password_hash.php';
+    $hash = create_hash($password);
+    if (!isSaved($url,$pdo)) {
         try {
-            require 'password_hash.php';
-            $hash = create_hash($password);
             $stmt = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
             $stmt->bindValue(':url', $url, PDO::PARAM_STR);
             $stmt->bindValue(':content', null);
@@ -148,9 +146,8 @@ function protectView($url, $password,$pdo)
  * @return boolean true, if password matches
  * @return error message if exception catched during PDO
  */
-function verifyPassword($url, $password,$pdo)
+function verifyPassword($url,$password,$pdo)
 {
-    
     try {
         require 'password_hash.php';
         $stmt = $pdo->prepare("SELECT pwdEdit from note where id = :url");

@@ -88,7 +88,7 @@ $app->post('/{url}/view', function($url) use ($app)
     $pdo = $app['pdo'];
     require './src/model_note_view.php';
     $password = $app['request']->get('password'); //on recupere le mot de passe de la requete POST
-    if (verifyPassword($url, $password,$pdo)) {
+    if (verifyPassword($url,$password,$pdo)) {
         // on verifie si le password entré est égal à celui de la DB
         if (isset($app['session']) and $app['session']->get('id') == $url) {
             // si la session existe deja avec le parametre id egal à l'url
@@ -156,7 +156,7 @@ $app->post('/{url}/edit', function($url) use ($app)
     switch ($type) {
         case "login":
             $password = $app['request']->get('password');
-            if (verifyPassword($url, $password,$pdo)) {
+            if (verifyPassword($url,$password,$pdo)) {
                 if (isset($app['session']) and $app['session']->get('id') == $url) {
                     $app['session']->set('edit', True);
                 } else {

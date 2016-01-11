@@ -47,14 +47,15 @@ function isViewProtected($url,$pdo)
  * @return boolean true, if password matches
  * @return error message if exception catched during PDO
  */
-function verifyPassword($url, $pwd,$pdo)
+function verifyPassword($url,$password,$pdo)
 {
     try {
+        require 'password_hash.php';
         $stmt = $pdo->prepare("SELECT pwdView from note where id = :url");
         $stmt->bindValue(':url', $url, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return password_verify($pwd, $result['pwdView']);
+        return validate_password($password, $result['pwdView']);
     }
     catch (PDOException $e) {
         throw ($e);
@@ -78,43 +79,5 @@ function isSaved($url,$pdo)
     }
     catch (PDOException $e) {
         throw ($e);
-    }
-}
-
-/**
- * add a password to protect the view
- * @param string $url 
- * @param string $password 
- * @return boolean true, if password was added
- * @return error message if exception catched during PDO
- */
-function protectView($url, $password,$pdo)
-{
-    require 'password_hash.php';
-    $hash = create_hash($password);
-    if (!isSaved($url)) {
-        try {
-            $stmt = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
-            $stmt->bindValue(':url', $url, PDO::PARAM_STR);
-            $stmt->bindValue(':content', null);
-            $stmt->bindValue(':pwdView', $hash, PDO::PARAM_STR);
-            $stmt->bindValue(':pwdEdit', null);
-            $stmt->execute();
-            return True;
-        }
-        catch (PDOException $e) {
-            throw ($e);
-        }
-    } else {
-        try {
-            $stmt = $pdo->prepare("UPDATE note SET pwdView = :pwdView WHERE id = :url");
-            $stmt->bindValue(':url', $url, PDO::PARAM_STR);
-            $stmt->bindValue(':pwdView', $hash, PDO::PARAM_STR);
-            $stmt->execute();
-            return True;
-        }
-        catch (PDOException $e) {
-            throw ($e);
-        }
     }
 }
