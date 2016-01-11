@@ -19,6 +19,29 @@ function isEditProtected($url)
         throw ($e);
     }
 }
+
+/**
+ * check if the note view is protected
+ * @param string $url 
+ * @return boolean true, if protected otherwise false
+ * @return error message if exception catched during PDO
+ */
+function isViewProtected($url)
+{
+    global $pdo;
+    try {
+        $stmt = $pdo->prepare("SELECT pwdView from note where id = :url");
+        $stmt->bindValue(':url', $url, PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (!empty($result['pwdView']));
+    }
+    catch (PDOException $e) {
+        throw ($e);
+    }
+}
+
+
 /**
  * check if the note view is protected
  * @param string $url 

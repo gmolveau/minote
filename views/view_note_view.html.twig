@@ -11,6 +11,7 @@
     width:100%;
   }
 
+
 </style>
 {% endblock %}
 
@@ -24,22 +25,22 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">MILINKS</a>
+      <a class="navbar-brand" href="/"><img src="../lib/images/logo.png" alt="MILINKS"/></a>
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <a href="http://milinks.info/{{url}}/edit"><button type="button" class="btn btn-default navbar-btn">Edit</button></a>
+        <li><a href="http://milinks.info/{{url}}/edit">GO TO EDIT</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <p class="navbar-text navbar-center">Note URL : <strong>{{url | raw }}</strong></p>
-        <button type="button" id='whats' class="btn btn-default navbar-btn">About</button>
+        <p class="navbar-text navbar-center">NOTE URL : <strong>{{url | raw }}</strong></p>
+        <li><a href="#" id='whats'>ABOUT US</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
  
   <div id="editor" class='container-fluid'>
-      <textarea id="content" v-model="input" debounce="300" class="col-xs-6">{{content}}</textarea>
+      <textarea id="content" v-model="input" class="col-xs-6">{{content}}</textarea>
       <div class="col-xs-12" id="render" v-html="input | marked"></div>
   </div>
 

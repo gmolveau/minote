@@ -5,14 +5,7 @@
 <link href="{{ app.request.basepath }}/lib/sweetalert/sweetalert.css" rel="stylesheet">
 <style>
   .edit-add{display:flex;list-style-type:none;}
-  .navbar-brand {
-  padding: 0px; /* firefox bug fix */
-}
-.navbar-brand>img {
-  height: 100%;
-  padding: 1px; /* firefox bug fix */
-  width: auto;
-}
+
 </style>
 {% endblock %}
 
@@ -26,29 +19,28 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/"><img src="../lib/images/logo.png" /></a>
+      <a class="navbar-brand" href="/"><img src="../lib/images/logo.png" alt="MILINKS"/></a>
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="#" id='view'>View</a></li>
-        <li><a href="#" id='changeUrl'>Change URL</a></li>
-        <li><a href="#" id='protectView'>Protect View</a></li>
-        <li><a href="#" id='protectEdit'>Protect Edit</a></li>
+        <li><a href="#" id='view'>VIEW</a></li>
+        <li><a href="#" id='changeUrl'>CHANGE URL</a></li>
+        <li><a href="#" id='protectView'>PROTECT VIEW <i id="lockView"></i></a></li>
+        <li><a href="#" id='protectEdit'>PROTECT EDIT <i id="lockEdit"></i></a></li>
       </ul>
-      <ul class="nav navbar-nav navbar-center">
-        <li><a hrefNote URL : <strong>{{url | raw }}</strong></li>
-      </ul>
+      
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#" id='whats'>About</a></li>
+        <li class="navbar-text">NOTE URL : <strong>{{url | raw }}</strong></li>
+        <li><a href="http://milinks.info/tutorial/view" target="_blank">TUTORIAL</a></li>
+        <li><a href="#" id='whats'>ABOUT US</a></li>
       </ul>
 
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
 
-  </div>
 	<div id="editor" class='container-fluid'>
-    <textarea id="content" v-model="input" debounce="300" class="col-xs-6">{{content}}</textarea>
+    <textarea id="content" v-model="input" class="col-xs-6" autofocus>{{content}}</textarea>
     <div class="col-xs-6" id="render" v-html="input | marked"></div>
   </div>
 
@@ -60,6 +52,8 @@
 <script src="{{ app.request.basepath }}/lib/js/vue.min.js"></script>
 <script>
 url = '{{url | raw }}';
+viewProtected = '{{ viewProtected }}';
+editProtected = '{{ editProtected }}';
 </script>
 <script src="{{ app.request.basepath }}/lib/js/note_edit.js"></script>
 {% endblock %}

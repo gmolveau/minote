@@ -9,36 +9,43 @@
 $(document).keydown(function(e) {
     if (e.keyCode == 27) return false;
 });
-  url = '{{url}}';
-  $( document ).ready(function() {
-      swal({
-      title: "Password Required",
-      text: "Enter the password to {{ type | raw }} the note :",
-      type: "input",
-      inputType:"password",
-      showCancelButton: false,
-      closeOnConfirm: false,
-      animation: "slide-from-top",
-      inputPlaceholder: "supr4 p@55w0rd"
-    },
-    function(inputValue) {
-            if (inputValue === false) return false;
-      if (inputValue === "") {
-        swal.showInputError("Nope, you must write something ;) ");
-        return false;
-      }
-      var datastring = 'type=login&url=' + url + '&password=' + inputValue;
-      console.log(datastring);
-      $.ajax({
-        type: "POST",
-        url: "#",
-        data: datastring,
-        success: function(html) {
-          swal("Nice!", "success");
-          window.location.href = '/'+ url +'/edit';
-        }
-      });
-    });
+url = '{{url}}';
+$(document).ready(function() {
+    showForm();
 });
+
+function showForm() {
+    swal({
+            title: "Password Required",
+            text: "Enter the password to {{ type | raw }} the note :",
+            type: "input",
+            inputType: "password",
+            showCancelButton: false,
+            closeOnConfirm: false,
+            animation: "slide-from-top",
+            inputPlaceholder: "supr4 p@55w0rd"
+        },
+        function(inputValue) {
+            if (inputValue === false) return false;
+            if (inputValue === "") {
+                swal.showInputError("Nope, you must write something ;) ");
+                return false;
+            }
+            var datastring = 'type=login&url=' + url + '&password=' + inputValue;
+            console.log(datastring);
+            $.ajax({
+                type: "POST",
+                url: "#",
+                data: datastring,
+                success: function(html) {
+                    swal("Nice!", "success");
+                    window.location.href = '/' + url + '/edit';
+                },
+                error: function(html) {
+                    showForm();
+                }
+            });
+        });
+}
 </script>
 {% endblock %}
