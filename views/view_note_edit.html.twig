@@ -5,6 +5,14 @@
 <link href="{{ app.request.basepath }}/lib/sweetalert/sweetalert.css" rel="stylesheet">
 <style>
   .edit-add{display:flex;list-style-type:none;}
+  .navbar-brand {
+  padding: 0px; /* firefox bug fix */
+}
+.navbar-brand>img {
+  height: 100%;
+  padding: 15px; /* firefox bug fix */
+  width: auto;
+}
 </style>
 {% endblock %}
 
