@@ -6,7 +6,7 @@ $app->get('/', function() use ($app)
     $pdo = $app['pdo'];
     require './src/model_index.php';
     $url = generateUrl($pdo);
-    return $app->redirect($url . '/edit');
+    return $app->redirect('/'.$url . '/edit');
 });
 
 //arrivée avec url deja connue
@@ -182,7 +182,7 @@ $app->post('/{url}/edit', function($url) use ($app)
             changeUrl($url, $new_url,$pdo);
             return true;
         case "save":
-            if (!isEditProtected($url)) {
+            if (!isEditProtected($url,$pdo)) {
                 $content = $app['request']->get('content');
                 updateNote($url, $content,$pdo);
                 return True;

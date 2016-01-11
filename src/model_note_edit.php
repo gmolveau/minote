@@ -194,8 +194,7 @@ function getContent($url,$pdo)
  */
 function updateNote($url, $content,$pdo)
 {
-    
-    if (!isSaved($url)) {
+    if (!isSaved($url,$pdo)) {
         try {
             $stmt = $pdo->prepare("INSERT INTO note(id,content,pwdView,pwdEdit) VALUES(:url,:content,:pwdView,:pwdEdit)");
             $stmt->bindValue(':url', $url, PDO::PARAM_STR);
