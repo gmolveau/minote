@@ -6,7 +6,7 @@ $app->get('/', function() use ($app)
     $pdo = $app['pdo'];
     require './src/model_index.php';
     $url = generateUrl($pdo);
-    return $app->redirect('/'.$url . '/edit');
+    return $app->redirect($url . '/edit');
 });
 
 //arrivée avec url deja connue
