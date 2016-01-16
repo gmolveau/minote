@@ -13,20 +13,13 @@ $app->get('/', function() use ($app)
 $app->get('/{url}', function($url) use ($app)
 {
     $pdo = $app['pdo'];
-    if ($url == "notes") {
-        require './src/model_notes.php'; //appel du model
-        $all_notes = get_all_notes($pdo); // appel de la fonction pour récupérer la liste des notes
-        return $app['twig']->render('view_notes.html.twig', array(
-            'all_notes' => $all_notes
-        )); //appel du view
+    require './src/model_index.php';
+    if (checkUrl($url,$pdo)) {
+        return $app->redirect($url . '/view');
     } else {
-        require './src/model_index.php';
-        if (checkUrl($url,$pdo)) {
-            return $app->redirect($url . '/view');
-        } else {
-            $app->abort(404, "l'url \" $url \" is not a valid one. Must be alphanumeric and less than 10 characters.");
-        }
+        $app->abort(404, "l'url \" $url \" is not a valid one. Must be alphanumeric and less than 10 characters.");
     }
+    
 });
 
 $app->get('/{url}/', function($url) use ($app)
@@ -48,11 +41,20 @@ $app->get('/{url}/view', function($url) use ($app)
         if (isset($app['session'])) {
             if ($app['session']->get('id') == $url) {
                 if ($app['session']->get('view')) {
-                    $content = getContent($url,$pdo);
-                    return $app['twig']->render('view_note_view.html.twig', array(
-                        'content' => $content,
-                        'url' => $url
-                    ));
+                    if ($url == 'notes'){
+                        require './src/model_notes.php'; //appel du model
+                        $all_notes = get_all_notes($pdo); // appel de la fonction pour récupérer la liste des notes
+                        return $app['twig']->render('view_notes.html.twig', array(
+                            'all_notes' => $all_notes
+                        )); //appel du view
+                    }
+                    else {
+                        $content = getContent($url,$pdo);
+                        return $app['twig']->render('view_note_view.html.twig', array(
+                            'content' => $content,
+                            'url' => $url
+                        ));
+                    }
                 }
             }
         }
