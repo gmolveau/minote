@@ -41,20 +41,11 @@ $app->get('/{url}/view', function($url) use ($app)
         if (isset($app['session'])) {
             if ($app['session']->get('id') == $url) {
                 if ($app['session']->get('view')) {
-                    if ($url == 'notes'){
-                        require './src/model_notes.php'; //appel du model
-                        $all_notes = get_all_notes($pdo); // appel de la fonction pour récupérer la liste des notes
-                        return $app['twig']->render('view_notes.html.twig', array(
-                            'all_notes' => $all_notes
-                        )); //appel du view
-                    }
-                    else {
-                        $content = getContent($url,$pdo);
-                        return $app['twig']->render('view_note_view.html.twig', array(
-                            'content' => $content,
-                            'url' => $url
-                        ));
-                    }
+                    $content = getContent($url,$pdo);
+                    return $app['twig']->render('view_note_view.html.twig', array(
+                        'content' => $content,
+                        'url' => $url
+                    ));
                 }
             }
         }
@@ -63,18 +54,6 @@ $app->get('/{url}/view', function($url) use ($app)
             'url' => $url
         ));
     }
-    /*
-    if( (isset( $app['session']) and  $app['session']->get('id')==$url and  $app['session']->get('view')) or !isViewProtected($url) ){
-    // si une session existe ET si le parametre 'id' de cette session est egal à l'url 
-    // ET si le parametre 'view' qui est un booléen est True; OU ALORS si la view n'est PAS protected
-    $content=getContent($url);
-    return $app['twig']->render('view_note_view.html.twig',array('content' => $content));
-    }
-    else{
-    //sinon : donc si pas de session ou pas pas le bon id ou pas le droit de view ou si elle est protected
-    return $app['twig']->render('view_note_protected.html.twig',array('type'=>'view'));
-    }
-    */
 });
 
 // gestion du cas du / rajouté à la fin
@@ -83,8 +62,6 @@ $app->get('/{url}/view/', function($url) use ($app)
     return $app->redirect($url . '/view');
 });
 
-// la méthode POST sur la view de chaque note
-// la seule methode POST qui aura lieu sur la view d'une note est le LOGIN
 $app->post('/{url}/view', function($url) use ($app)
 {
     $pdo = $app['pdo'];
@@ -146,6 +123,7 @@ $app->get('/{url}/edit/', function($url) use ($app)
 {
     return $app->redirect($url . '/edit');
 });
+
 // la méthode POST sur la view de chaque note
 // il y'aura plusieurs POST possibles vers cette page cest pour cela qu'on fait un switch
 $app->post('/{url}/edit', function($url) use ($app)

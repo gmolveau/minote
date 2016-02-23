@@ -1,5 +1,0 @@
-Options -MultiViews
-RewriteEngine On
-RewriteBase /~molveau/milinks
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^ /~molveau/milinks/index.php [QSA,L]
